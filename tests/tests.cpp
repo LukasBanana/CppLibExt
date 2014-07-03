@@ -1,0 +1,103 @@
+
+// Test file
+
+#include <iostream>
+#include <cstdlib>
+
+#include <multi_array.hpp>
+
+
+int main()
+{
+    typedef multi_array<int, 3, 4, 2> my_array_t;
+
+    my_array_t my_array;
+    std::cout << "# of dimensions:\t" << my_array_t::num_dimensions << std::endl;
+    std::cout << "# of elements:\t\t" << my_array_t::num_elements << std::endl;
+    std::cout << "size in bytes:\t\t" << my_array_t::data_size << std::endl;
+
+    std::cout << std::endl;
+
+    try
+    {
+        for (size_t x = 0; x < 3; ++x)
+        {
+            for (size_t y = 0; y < 4; ++y)
+            {
+                for (size_t z = 0; z < 2; ++z)
+                {
+                    auto x_ = x + 1;
+                    auto y_ = y + 1;
+                    auto z_ = z + 1;
+
+                    my_array.at(x).at(y).at(z) = x_*y_*z_;
+                }
+            }
+        }
+
+        my_array[1] = -1;
+        my_array[2][1] = -3;
+        my_array[2][2][0] = -5;
+        
+        for (size_t x = 0; x < 3; ++x)
+        {
+            for (size_t y = 0; y < 4; ++y)
+            {
+                for (size_t z = 0; z < 2; ++z)
+                {
+                    std::cout << "my_array[" << x << "]" << "[" << y << "]" << "[" << z << "] = " << my_array[x][y][z] << std::endl;
+                }
+            }
+        }
+        
+        std::cout << std::endl;
+
+        multi_array<int, 3, 2> my_simple_array;
+        my_simple_array.fill(4);
+
+        multi_array<int, 5> single_dim_array;
+        single_dim_array.fill(7);
+
+        for (auto& v : my_simple_array)
+        {
+            v = std::rand() % 10;
+            std::cout << "single_dim_array[x] (:= random) = " << v << std::endl;
+        }
+        std::cout << std::endl;
+
+        std::cout << "my_simple_array sorted:" << std::endl;
+        std::sort(my_simple_array.begin(), my_simple_array.end());
+
+        for (auto& v : my_simple_array)
+            std::cout << "single_dim_array[x] = " << v << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "my_simple_array reverse:" << std::endl;
+        for (auto it = single_dim_array.rbegin(); it != single_dim_array.rend(); ++it)
+            std::cout << "single_dim_array[x] = " << *it << std::endl;
+        std::cout << std::endl;
+
+        my_simple_array.at(2) = 0;
+
+        std::cout << "my_simple_array.empty() = " << my_simple_array.empty() << std::endl;
+
+        std::cout << std::endl;
+        std::cout << "my_array.slices<0>() = " << my_array.slices<0>() << std::endl;
+        std::cout << "my_array.slices<1>() = " << my_array.slices<1>() << std::endl;
+        std::cout << "my_array.slices<2>() = " << my_array.slices<2>() << std::endl;
+
+        std::cout << std::endl;
+        std::cout << "my_array.slices(0) = " << my_array.slices(0) << std::endl;
+        std::cout << "my_array.slices(1) = " << my_array.slices(1) << std::endl;
+        std::cout << "my_array.slices(2) = " << my_array.slices(2) << std::endl;
+    }
+    catch (const std::exception& err)
+    {
+        std::cout << "EXCEPTION: \"" << err.what() << "\"" << std::endl;
+    }
+
+    std::cout << std::endl;
+    system("pause");
+    
+    return 0;
+}
