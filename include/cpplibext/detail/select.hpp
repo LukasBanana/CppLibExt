@@ -12,6 +12,9 @@
 #define _CPPLIBEXT_SELECT_H_
 
 
+#include <cstdlib>
+
+
 // This namespace is only used internally
 namespace detail
 {
