@@ -11,7 +11,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include <multi_array.hpp>
+#include <cpplibext/multi_array.hpp>
 
 
 int main()

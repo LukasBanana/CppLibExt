@@ -8,61 +8,17 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
+#ifndef _CPPLIBEXT_MULTI_ARRAY_H_
+#define _CPPLIBEXT_MULTI_ARRAY_H_
+
+
+#include <cpplibext/detail/product.hpp>
+#include <cpplibext/detail/select.hpp>
+
 #include <initializer_list>
 #include <limits>
 #include <algorithm>
 #include <array>
-
-
-// This namespace is only used internally
-namespace detail
-{
-
-/* --- Product meta template (computes X1 * X2 * ... * XN) --- */
-
-// Declaration for GCC and clang
-template <typename T, T... XN> struct product_secondary;
-
-template <typename T, T X1, T... XN> struct product
-{
-    // Brackets are required!
-    static const T value = (X1 * product_secondary<T, XN...>::value);
-};
-
-template <typename T, T... XN> struct product_secondary
-{
-    // Brackets are required!
-    static const T value = (product<T, XN...>::value);
-};
-
-template <typename T> struct product_secondary<T>
-{
-    static const T value = T(1);
-};  
-
-/* --- Select element from variadic template arguments --- */
-
-// Declaration for GCC and clang
-template <typename T, std::size_t index, T... XN> struct select_secondary;
-
-template <typename T, std::size_t index, T X1, T... XN> struct select
-{
-    // Brackets are required!
-    static const T value = (select_secondary<T, (index - std::size_t(1)), XN...>::value);
-};
-
-template <typename T, T X1, T... XN> struct select<T, std::size_t(0), X1, XN...>
-{
-    static const T value = X1;
-};
-
-template <typename T, std::size_t index, T... XN> struct select_secondary
-{
-    // Brackets are required!
-    static const T value = (select<T, index, XN...>::value);
-};
-
-} // /namespace detail
 
 
 /**
@@ -628,5 +584,7 @@ template <typename T, std::size_t Dimension> class multi_array<T, Dimension>
 
 };
 
+
+#endif
 
 
