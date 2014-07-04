@@ -14,22 +14,39 @@
 #include <cpplibext/multi_array.hpp>
 
 
+#ifdef _MSC_VER
+#   define NOINLINE __declspec(noinline) 
+#else
+#   define NOINLINE
+#endif
+
+typedef int ClassicArray[10][10][10];
+typedef multi_array<int, 10, 10, 10> LukasArray;
+
+NOINLINE int Get(const ClassicArray& a, size_t x, size_t y, size_t z)
+{
+    return a[x][y][z];
+}
+
+NOINLINE int Get(const LukasArray& a, size_t x, size_t y, size_t z)
+{
+    return a[x][y][z];
+}
+
+
 int main()
 {
     // C array comparision
-    int A[2][3][4];
-    multi_array<int, 2, 3, 4> B;
+    ClassicArray A;
+    LukasArray B;
 
     A[1][2][3] = 5;
     B[0][2][2] = 6;
 
     for (size_t x = 0; x < 2; ++x)
     {
-        A[x][x][x] = (rand() % 10);
-        B[x][x][x] = (rand() % 10);
-
-        std::cout << A[x][x][x] << " ";
-        std::cout << B[x][x][x] << " ";
+        std::cout << Get(A, x, x, x) << " ";
+        std::cout << Get(B, x, x, x) << " ";
     }
 
     // Some array tests
