@@ -17,8 +17,20 @@
 int main()
 {
     // C array comparision
+    int A[2][3][4];
+    multi_array<int, 2, 3, 4> B;
 
+    A[1][2][3] = 5;
+    B[0][2][2] = 6;
 
+    for (size_t x = 0; x < 2; ++x)
+    {
+        A[x][x][x] = (rand() % 10);
+        B[x][x][x] = (rand() % 10);
+
+        std::cout << A[x][x][x] << " ";
+        std::cout << B[x][x][x] << " ";
+    }
 
     // Some array tests
     typedef multi_array<int, 3, 4, 2> my_array_t;
