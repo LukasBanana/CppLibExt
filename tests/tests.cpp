@@ -1,5 +1,12 @@
-
-// Test file
+/*
+ * tests.cpp file
+ * 
+ * Copyright (C) 2014 Lukas Hermanns
+ * All rights reserved.
+ *
+ * This software may be modified and distributed under the terms
+ * of the BSD license.  See the LICENSE file for details.
+ */
 
 #include <iostream>
 #include <cstdlib>
@@ -9,6 +16,11 @@
 
 int main()
 {
+    // C array comparision
+
+
+
+    // Some array tests
     typedef multi_array<int, 3, 4, 2> my_array_t;
 
     my_array_t my_array;
