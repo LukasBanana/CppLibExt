@@ -384,7 +384,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
 
         const_slice<Dimensions...> operator [] (const size_type& index) const
         {
-            return slice<Dimensions...>(data_ + (stride*index));
+            return const_slice<Dimensions...>(data_ + (stride*index));
         }
 
         slice<Dimensions...> at(const size_type& index)
@@ -398,7 +398,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
         {
             if (index >= first_dimension<Dimensions...>::value)
                 throw std::out_of_range("multi_array::slice out of range");
-            return slice<Dimensions...>(data_ + (stride*index));
+            return const_slice<Dimensions...>(data_ + (stride*index));
         }
 
 };
