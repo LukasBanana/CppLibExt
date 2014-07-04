@@ -119,6 +119,18 @@ template <typename T, std::size_t... Dimensions> class multi_array
         {
             static_assert(sizeof...(Dimensions) > 0, "multi_array must have at least 1 dimension");
         }
+        multi_array(const value_type& value)
+        {
+            fill(value);
+        }
+        multi_array(const this_array_type& other)
+        {
+            std::copy(other.begin(), other.end(), begin());
+        }
+        multi_array(const std::initializer_list<value_type>& list)
+        {
+            std::copy(list.begin(), list.end(), begin());
+        }
 
         pointer data()
         {

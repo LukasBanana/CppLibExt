@@ -16,7 +16,10 @@
 namespace detail
 {
 
-/* --- Product meta template (computes X1 * X2 * ... * XN) --- */
+/*
+meta template to compute the product of N inregral numbers (computes X1 * X2 * ... * XN):
+product<int, 2, 5, 3>::value == 2*5*3 = 30;
+*/
 
 // Declaration for GCC and clang
 template <typename T, T... XN> struct product_secondary;

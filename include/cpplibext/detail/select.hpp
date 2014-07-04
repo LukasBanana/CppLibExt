@@ -19,7 +19,12 @@
 namespace detail
 {
 
-/* --- Select element from variadic template arguments --- */
+/*
+meta template to select entry of variadic template arguments:
+select<int, size_t(0), 2, 5, 3>::value == 2;
+select<int, size_t(1), 2, 5, 3>::value == 5;
+select<int, size_t(2), 2, 5, 3>::value == 3;
+*/
 
 // Declaration for GCC and clang
 template <typename T, std::size_t index, T... XN> struct select_secondary;
