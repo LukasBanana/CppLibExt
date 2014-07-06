@@ -98,22 +98,21 @@ template <typename T, std::size_t... Dimensions> class multi_array
         //! Number of elements to the next slice.
         static const size_type stride = next_array_size<Dimensions...>::value;
 
-        //! Iterator is just a pointer type (like in GCC 4.7)
-        typedef value_type*                             iterator;
-        typedef const value_type*                       const_iterator;
-
-        //! TODO Reverse iterator does not negate the ++ and -- operators! (INCOMPLETE)
-        typedef std::reverse_iterator<iterator>         reverse_iterator;
-        typedef std::reverse_iterator<const_iterator>   const_reverse_iterator;
-
     private:
 
         typedef multi_array<T, Dimensions...> this_array_type;
 
+        typedef std::array<value_type, num_elements> storage_type;
+
         //! Array data storage.
-        value_type data_[num_elements];
+        storage_type data_;
 
     public:
+
+        typedef typename storage_type::iterator                  iterator;
+        typedef typename storage_type::const_iterator            const_iterator;
+        typedef typename storage_type::reverse_iterator          reverse_iterator;
+        typedef typename storage_type::const_reverse_iterator    const_reverse_iterator;
 
         multi_array()
         {
@@ -123,9 +122,9 @@ template <typename T, std::size_t... Dimensions> class multi_array
         {
             fill(value);
         }
-        multi_array(const this_array_type& other)
+        multi_array(const this_array_type& other) :
+            data_(other.data_)
         {
-            std::copy(other.begin(), other.end(), begin());
         }
         multi_array(const std::initializer_list<value_type>& list)
         {
@@ -134,11 +133,11 @@ template <typename T, std::size_t... Dimensions> class multi_array
 
         pointer data()
         {
-            return data_;
+            return data_.data();
         }
         const_pointer data() const
         {
-            return data_;
+            return data_.data();
         }
 
         //! Returns the total number of elements.
@@ -149,77 +148,77 @@ template <typename T, std::size_t... Dimensions> class multi_array
 
         bool empty() const
         {
-            return size() == 0;
+            return data_.empty();
         }
 
         //! Returns the maximal number of elements (equal to std::numeric_limits<size_type>::max()).
         size_type max_size() const
         {
-            return std::numeric_limits<size_type>::max();
+            return data_.max_size();
         }
 
         iterator begin()
         {
-            return iterator(data());
+            return data_.begin();
         }
         const_iterator begin() const
         {
-            return const_iterator(data());
+            return data_.begin();
         }
 
         reverse_iterator rbegin()
         {
-            return reverse_iterator(end());
+            return data_.rbegin();
         }
         const_reverse_iterator rbegin() const
         {
-            return const_reverse_iterator(end());
+            return data_.rend();
         }
 
         iterator end()
         {
-            return iterator(data() + num_elements);
+            return data_.end();
         }
         const_iterator end() const
         {
-            return const_iterator(data() + num_elements);
+            return data_.end();
         }
 
         reverse_iterator rend()
         {
-            return reverse_iterator(begin());
+            return data_.rend();
         }
         const_reverse_iterator rend() const
         {
-            return const_reverse_iterator(begin());
+            return data_.rend();
         }
 
         reference front()
         {
-            return *begin();
+            return data_.front();
         }
         const_reference front() const
         {
-            return *begin();
+            return data_.front();
         }
 
         reference back()
         {
-            return num_elements > 0 ? *(end() - 1) : *end();
+            return data_.back();
         }
         const_reference back() const
         {
-            return num_elements > 0 ? *(end() - 1) : *end();
+            return data_.back();
         }
 
         void fill(const value_type& value)
         {
-            std::fill(begin(), end(), value);
+            data_.fill(value);
         }
 
         void swap(this_array_type& other)
         {
-            std::swap_ranges(begin(), end(), other.begin());
+            data_.swap(other.data_);
         }
 
         /**
@@ -379,26 +378,26 @@ template <typename T, std::size_t... Dimensions> class multi_array
 
         slice<Dimensions...> operator [] (const size_type& index)
         {
-            return slice<Dimensions...>(data_ + (stride*index));
+            return slice<Dimensions...>(data_.data() + (stride*index));
         }
 
         const_slice<Dimensions...> operator [] (const size_type& index) const
         {
-            return const_slice<Dimensions...>(data_ + (stride*index));
+            return const_slice<Dimensions...>(data_.data() + (stride*index));
         }
 
         slice<Dimensions...> at(const size_type& index)
         {
             if (index >= first_dimension<Dimensions...>::value)
                 throw std::out_of_range("multi_array::slice out of range");
-            return slice<Dimensions...>(data_ + (stride*index));
+            return slice<Dimensions...>(data_.data() + (stride*index));
         }
 
         const_slice<Dimensions...> at(const size_type& index) const
         {
             if (index >= first_dimension<Dimensions...>::value)
                 throw std::out_of_range("multi_array::slice out of range");
-            return const_slice<Dimensions...>(data_ + (stride*index));
+            return const_slice<Dimensions...>(data_.data() + (stride*index));
         }
 
 };
@@ -436,31 +435,45 @@ template <typename T, std::size_t Dimension> class multi_array<T, Dimension>
         //! Number of elements to the next slice.
         static const size_type stride = 1;
 
-        typedef value_type*                             iterator;
-        typedef const value_type*                       const_iterator;
-        typedef std::reverse_iterator<iterator>         reverse_iterator;
-        typedef std::reverse_iterator<const_iterator>   const_reverse_iterator;
-
     private:
-        
+
         typedef multi_array<T, Dimension> this_array_type;
 
+        typedef std::array<value_type, num_elements> storage_type;
+
         //! Array data storage.
-        value_type data_[num_elements];
+        storage_type data_;
 
     public:
+
+        typedef typename storage_type::iterator                  iterator;
+        typedef typename storage_type::const_iterator            const_iterator;
+        typedef typename storage_type::reverse_iterator          reverse_iterator;
+        typedef typename storage_type::const_reverse_iterator    const_reverse_iterator;
 
         multi_array()
         {
         }
+        multi_array(const value_type& value)
+        {
+            fill(value);
+        }
+        multi_array(const this_array_type& other) :
+            data_(other.data_)
+        {
+        }
+        multi_array(const std::initializer_list<value_type>& list)
+        {
+            std::copy(list.begin(), list.end(), begin());
+        }
 
         pointer data()
         {
-            return data_;
+            return data_.data();
         }
         const_pointer data() const
         {
-            return data_;
+            return data_.data();
         }
 
         //! Returns the total number of elements.
@@ -472,76 +485,76 @@ template <typename T, std::size_t Dimension> class multi_array<T, Dimension>
         //! Returns the maximal number of elements (equal to std::numeric_limits<size_type>::max()).
         size_type max_size() const
         {
-            return std::numeric_limits<size_type>::max();
+            return data_.max_size();
         }
 
         bool empty() const
         {
-            return size() == 0;
+            return data_.empty();
         }
 
         iterator begin()
         {
-            return iterator(data());
+            return data_.begin();
         }
         const_iterator begin() const
         {
-            return const_iterator(data());
+            return data_.begin();
         }
 
         reverse_iterator rbegin()
         {
-            return reverse_iterator(end());
+            return data_.rbegin();
         }
         const_reverse_iterator rbegin() const
         {
-            return const_reverse_iterator(end());
+            return data_.rbegin();
         }
 
         iterator end()
         {
-            return iterator(data() + num_elements);
+            return data_.end();
         }
         const_iterator end() const
         {
-            return const_iterator(data() + num_elements);
+            return data_.end();
         }
 
         reverse_iterator rend()
         {
-            return reverse_iterator(begin());
+            return data_.rend();
         }
         const_reverse_iterator rend() const
         {
-            return const_reverse_iterator(begin());
+            return data_.rend();
         }
 
         reference front()
         {
-            return *begin();
+            return data_.front();
         }
         const_reference front() const
         {
-            return *begin();
+            return data_.front();
         }
 
         reference back()
         {
-            return num_elements > 0 ? *(end() - 1) : *end();
+            return data_.back();
         }
         const_reference back() const
         {
-            return num_elements > 0 ? *(end() - 1) : *end();
+            return data_.back();
         }
 
         void fill(const value_type& value)
         {
-            std::fill(begin(), end(), value);
+            data_.fill(value);
         }
 
         void swap(this_array_type& other)
         {
-            std::swap_ranges(begin(), end(), other.begin());
+            data_.swap(other.data_);
         }
 
         /**
@@ -582,16 +595,12 @@ template <typename T, std::size_t Dimension> class multi_array<T, Dimension>
 
         reference at(const size_type& index)
         {
-            if (index >= num_elements)
-                throw std::out_of_range("multi_array::slice out of range");
-            return data_[index];
+            return data_.at(index);
         }
 
         const_reference at(const size_type& index) const
         {
-            if (index >= num_elements)
-                throw std::out_of_range("multi_array::slice out of range");
-            return data_[index];
+            return data_.at(index);
         }
 
 };

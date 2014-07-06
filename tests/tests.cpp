@@ -96,8 +96,7 @@ int main()
         multi_array<int, 3, 2> my_simple_array;
         my_simple_array.fill(4);
 
-        multi_array<int, 5> single_dim_array;
-        single_dim_array.fill(7);
+        multi_array<int, 5> single_dim_array { 1, 2, 3, 4, 5 };
 
         for (auto& v : my_simple_array)
         {
@@ -113,7 +112,12 @@ int main()
             std::cout << "single_dim_array[x] = " << v << std::endl;
         std::cout << std::endl;
 
-        std::cout << "my_simple_array reverse:" << std::endl;
+        std::cout << "single_dim_array:" << std::endl;
+        for (auto it = single_dim_array.begin(); it != single_dim_array.end(); ++it)
+            std::cout << "single_dim_array[x] = " << *it << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "single_dim_array reverse:" << std::endl;
         for (auto it = single_dim_array.rbegin(); it != single_dim_array.rend(); ++it)
             std::cout << "single_dim_array[x] = " << *it << std::endl;
         std::cout << std::endl;
