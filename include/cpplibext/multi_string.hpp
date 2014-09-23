@@ -21,6 +21,7 @@ Multi string class provides an easy way to access each line of a string containe
 \tparam CharT Specifies the character type. Should be char or wchar_t.
 \tparam Traits Specifies the character traits for comparision operators. By default std::char_traits<CharT>.
 \tparam Allocator Specifies the memory allocator for the strings and the array list. By default std::allocator<CharT>.
+\todo This is incomplete!
 */
 template <
     class CharT,

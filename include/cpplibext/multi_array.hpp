@@ -26,7 +26,7 @@ Multi dimensional array class.
 \tparam T Specifies the data type for the array elements.
 \tparam Dimensions... Specifies the array dimensions. This must be at least 1 entry.
 */
-template <typename T, std::size_t... Dimensions> class multi_array
+template <class T, std::size_t... Dimensions> class multi_array
 {
     
     public:
@@ -408,7 +408,7 @@ Multi dimensional array class.
 \tparam T Specifies the data type for the array elements.
 \remarks This is a template specialization of the multi-dimensional multi_array class.
 */
-template <typename T, std::size_t Dimension> class multi_array<T, Dimension>
+template <class T, std::size_t Dimension> class multi_array<T, Dimension>
 {
     
     public:
