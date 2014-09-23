@@ -5,6 +5,7 @@ This is a small library of C++11 extensions.
 
 Current features:
 - multi_array
+- range_iterator (in progress)
 
 Examples
 ========
