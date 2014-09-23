@@ -10,8 +10,10 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <vector>
 
 #include <cpplibext/multi_array.hpp>
+#include <cpplibext/range_iterator.hpp>
 
 
 #ifdef _MSC_VER
@@ -61,6 +63,8 @@ int main()
 
     try
     {
+        /* --- multi_array tests --- */
+
         for (size_t x = 0; x < 3; ++x)
         {
             for (size_t y = 0; y < 4; ++y)
@@ -135,6 +139,26 @@ int main()
         std::cout << "my_array.slices(0) = " << my_array.slices(0) << std::endl;
         std::cout << "my_array.slices(1) = " << my_array.slices(1) << std::endl;
         std::cout << "my_array.slices(2) = " << my_array.slices(2) << std::endl;
+
+        /* --- range_iterator tests --- */
+
+        std::cout << std::endl;
+        for (range_iterator<decltype(my_array)> it { my_array }; !it.reached_end(); ++it)
+            std::cout << "range_iterator: " << *it << std::endl;
+
+        struct TestStruct
+        {
+            int a, b;
+        };
+
+        std::vector<TestStruct> testVec { { 1, 2 }, { 3, 4 } };
+
+        for (range_iterator<decltype(testVec)> it { testVec }; !it.reached_end(); ++it)
+            it->a = 42;
+
+        std::cout << std::endl;
+        for (auto s : testVec)
+            std::cout << "a = " << s.a << ", b = " << s.b << std::endl;
     }
     catch (const std::exception& err)
     {
