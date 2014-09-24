@@ -14,6 +14,7 @@
 
 #include <cpplibext/multi_array.hpp>
 #include <cpplibext/range_iterator.hpp>
+#include <cpplibext/make_array.hpp>
 
 
 using namespace ext;
@@ -165,6 +166,9 @@ int main()
     {
         std::cout << "EXCEPTION: \"" << err.what() << "\"" << std::endl;
     }
+
+    auto ptr1 = make_shared_array<int>(10);
+    auto ptr2 = std::make_unique<int[]>(10);
 
     std::cout << std::endl;
     system("pause");
