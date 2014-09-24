@@ -143,7 +143,7 @@ int main()
         /* --- range_iterator tests --- */
 
         std::cout << std::endl;
-        for (range_iterator<decltype(my_array)> it { my_array }; !it.reached_end(); ++it)
+        for (const_range_iterator<decltype(my_array)> it { my_array }; !it.reached_end(); ++it)
             std::cout << "range_iterator: " << *it << std::endl;
 
         struct TestStruct

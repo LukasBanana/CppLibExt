@@ -50,62 +50,63 @@ void ParseArguments(const_range_iterator<std::vector<std::string>> it)
 \endcode
 \todo This is still in progress
 */
-template <class Container> class range_iterator
+template <class Container, class BaseIterator> class base_range_iterator
 {
     
     public:
 
         /* --- Extended types --- */
-        typedef typename Container::iterator                iterator_type;
+        typedef BaseIterator                                    iterator_type;
+        typedef base_range_iterator<Container, BaseIterator>    this_type;
 
         /* --- STL iterator types --- */
-        typedef typename iterator_type::iterator_category   iterator_category;
-        typedef typename iterator_type::value_type          value_type;
-        typedef typename iterator_type::difference_type     difference_type;
-        typedef typename iterator_type::pointer             pointer;
-        typedef typename iterator_type::reference           reference;
+        typedef typename iterator_type::iterator_category       iterator_category;
+        typedef typename iterator_type::value_type              value_type;
+        typedef typename iterator_type::difference_type         difference_type;
+        typedef typename iterator_type::pointer                 pointer;
+        typedef typename iterator_type::reference               reference;
 
-        range_iterator(Container& container) :
+        base_range_iterator(Container& container) :
             begin_  ( container.begin() ),
             end_    ( container.end()   ),
             it_     ( begin_            )
         {
         }
-        range_iterator(iterator_type begin, iterator_type end) :
+        base_range_iterator(iterator_type begin, iterator_type end) :
             begin_  ( begin  ),
             end_    ( end    ),
             it_     ( begin_ )
         {
         }
 
-        range_iterator<Container>& operator ++ ()
+        this_type& operator ++ ()
         {
             #ifdef _DEBUG
             if (reached_end())
-                throw std::out_of_range("range_iterator::operator ++ out of range");
+                throw std::out_of_range("base_range_iterator::operator ++ out of range");
             #endif
             ++it_;
             return *this;
         }
 
-        range_iterator<Container> operator ++ (int)
+        this_type operator ++ (int)
         {
             auto tmp(*this);
             operator ++ ();
             return tmp;
         }
 
-        range_iterator<Container>& operator -- ()
+        this_type& operator -- ()
         {
             #ifdef _DEBUG
             if (reached_begin())
-                throw std::out_of_range("range_iterator::operator -- out of range");
+                throw std::out_of_range("base_range_iterator::operator -- out of range");
             #endif
             --it_;
             return *this;
         }
 
-        range_iterator<Container> operator -- (int)
+        this_type operator -- (int)
         {
             auto tmp(*this);
             operator -- ();
@@ -147,7 +148,7 @@ template <class Container> class range_iterator
         {
             #ifdef _DEBUG
             if (it_ == end_)
-                throw std::out_of_range("range_iterator::operator * out of range");
+                throw std::out_of_range("base_range_iterator::operator * out of range");
             #endif
             return *it_;
         }
@@ -157,7 +158,7 @@ template <class Container> class range_iterator
         {
             #ifdef _DEBUG
             if (it_ == end_)
-                throw std::out_of_range("range_iterator::operator * out of range");
+                throw std::out_of_range("base_range_iterator::operator * out of range");
             #endif
             return it_.operator -> ();
         }
@@ -179,6 +180,10 @@ template <class Container> class range_iterator
         iterator_type begin_, end_, it_;
 
 };
+
+
+template <class Container> using range_iterator = base_range_iterator<Container, typename Container::iterator>;
+template <class Container> using const_range_iterator = base_range_iterator<const Container, typename Container::const_iterator>;
 
 
 #endif
