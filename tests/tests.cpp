@@ -35,7 +35,6 @@ NOINLINE int Get(const LukasArray& a, size_t x, size_t y, size_t z)
     return a[x][y][z];
 }
 
-
 int main()
 {
     // C array comparision
@@ -153,7 +152,7 @@ int main()
 
         std::vector<TestStruct> testVec { { 1, 2 }, { 3, 4 } };
 
-        for (range_iterator<decltype(testVec)> it { testVec }; !it.reached_end(); ++it)
+        for (range_forward_iterator<decltype(testVec)> it { testVec }; !it.reached_end(); ++it)
             it->a = 42;
 
         std::cout << std::endl;
