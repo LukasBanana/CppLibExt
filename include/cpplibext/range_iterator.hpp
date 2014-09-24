@@ -15,6 +15,10 @@
 #include <stdexcept>
 
 
+namespace ext
+{
+
+
 /**
 Range iterator class.
 This iterator keeps track of its range ('begin' and 'end') and supports additional exception handling in debug mode.
@@ -289,6 +293,9 @@ template <class Container, class BaseIterator> class base_range_forward_iterator
 
 template <class Container> using range_forward_iterator = base_range_forward_iterator<Container, typename Container::iterator>;
 template <class Container> using const_range_forward_iterator = base_range_forward_iterator<const Container, typename Container::const_iterator>;
+
+
+} // /namespace ext
 
 
 #endif

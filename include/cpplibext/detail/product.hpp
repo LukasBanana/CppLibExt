@@ -12,9 +12,13 @@
 #define _CPPLIBEXT_PRODUCT_H_
 
 
+namespace ext
+{
+
 // This namespace is only used internally
 namespace detail
 {
+
 
 /*
 meta template to compute the product of N inregral numbers (computes X1 * X2 * ... * XN):
@@ -41,7 +45,10 @@ template <typename T> struct product_secondary<T>
     static const T value = T(1);
 };
 
+
 } // /namespace detail
+
+} // /namespace ext
 
 
 #endif

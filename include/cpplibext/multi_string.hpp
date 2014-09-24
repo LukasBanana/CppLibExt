@@ -11,9 +11,15 @@
 #ifndef _CPPLIBEXT_MULTI_STRING_H_
 #define _CPPLIBEXT_MULTI_STRING_H_
 
+#if 0//!INCOMPLETE!
+
 
 #include <string>
 #include <vector>
+
+
+namespace ext
+{
 
 
 /**
@@ -50,6 +56,10 @@ typedef basic_multi_string<char> multi_string;
 typedef basic_multi_string<wchar_t> multi_wstring;
 
 
+} // /namespace ext
+
+
+#endif
 
 #endif
 

@@ -15,9 +15,13 @@
 #include <cstdlib>
 
 
+namespace ext
+{
+
 // This namespace is only used internally
 namespace detail
 {
+
 
 /*
 meta template to select entry of variadic template arguments:
@@ -46,7 +50,10 @@ template <typename T, std::size_t index, T... XN> struct select_secondary
     static const T value = (select<T, index, XN...>::value);
 };
 
+
 } // /namespace detail
+
+} // /namespace ext
 
 
 #endif

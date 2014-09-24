@@ -16,6 +16,8 @@
 #include <cpplibext/range_iterator.hpp>
 
 
+using namespace ext;
+
 #ifdef _MSC_VER
 #   define NOINLINE __declspec(noinline) 
 #else

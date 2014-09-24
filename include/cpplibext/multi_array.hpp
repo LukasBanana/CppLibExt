@@ -21,6 +21,10 @@
 #include <array>
 
 
+namespace ext
+{
+
+
 /**
 Multi dimensional array class.
 \tparam T Specifies the data type for the array elements.
@@ -604,6 +608,9 @@ template <class T, std::size_t Dimension> class multi_array<T, Dimension>
         }
 
 };
+
+
+} // /namespace ext
 
 
 #endif
