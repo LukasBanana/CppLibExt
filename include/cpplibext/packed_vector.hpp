@@ -156,6 +156,11 @@ template <typename Base> class packed_vector
                     return reinterpret_cast<BaseType*>(&((*dataRef_)[offset]));
                 }
 
+                reference operator [] (const difference_type& offset) const
+                {
+                    return *(operator + (offset));
+                }
+
                 /* --- Iteration operators --- */
 
                 this_type& operator ++ ()
@@ -206,6 +211,16 @@ template <typename Base> class packed_vector
                     return tmp;
                 }
 
+                /* --- Conversion operators --- */
+
+                operator base_iterator<
+                    typename std::add_const<BaseType>::type,
+                    typename std::add_const<ChartType>::type,
+                    typename std::add_const<StorageType>::type> () const
+                {
+                    return { pos_, chartRef_, dataRef_ };
+                }
+
                 /* --- Functions --- */
 
                 //! Returns true if this iterator points to a valid element of its container.
@@ -254,25 +269,41 @@ template <typename Base> class packed_vector
         }
 
         /**
-        Appends the specified element to the end of the container.
+        Inserts the specified element into the container.
         \tparam Target Specifies the element data type. This must be from the type 'Base' or a derived type from 'Base'.
         \param[in] val Specifies the new element which is to be added.
+        */
+        template <typename Target> iterator insert(const_iterator pos, const Target& val)
+        {
+            assert_target_type<Target>();
+            insert_element(&val, sizeof(val), pos.pos_);
+            return begin() + pos.pos_;
+        }
+
+        //! Erases the element at the specified position.
+        iterator erase(const_iterator pos)
+        {
+            erase_element(pos.pos_);
+            return begin() + pos.pos_;
+        }
+
+        /**
+        Appends the specified element to the end of the container.
+        \see insert
         */
         template <typename Target> void push_back(const Target& val)
         {
             assert_target_type<Target>();
-            push_back_raw(&val, sizeof(val));
+            push_back_element(&val, sizeof(val));
         }
 
-        //! Erases the last element from the container. The container must not be empty!
+        /**
+        Erases the last element from the container. The container must not be empty!
+        \see erase
+        */
         void pop_back()
         {
-            erase_element(size() - 1);
-        }
-        //! Erases the frist element from the container. The container must not be empty!
-        void pop_front()
-        {
-            erase_element(0);
+            pop_back_element();
         }
 
         /**
@@ -356,31 +387,60 @@ template <typename Base> class packed_vector
             static_assert(std::is_base_of<Base, Target>::value, "'Target' must be a base of 'Base' in packed_vector");
         }
 
-        void copy(const void* data, const element& entry)
+        void copy_element(const void* data, const element& entry)
         {
             auto byteAligned = reinterpret_cast<const char*>(data);
             for (size_type i = 0; i < entry.size; ++i)
                 data_[entry.offset + i] = byteAligned[i];
         }
 
+        void insert_element(const void* data, size_type size, size_type pos)
+        {
+            /* Get insertion position */
+            auto insertion = chart_.at(pos);
+
+            /* Insert element into chart and update offsets of successive elements */
+            element entry { insertion.offset, size };
+            chart_.insert(chart_.begin() + pos, entry);
+            for (size_type i = pos + 1, n = chart_.size(); i < n; ++i)
+                chart_[i].offset += size;
+
+            /* Resize buffer */
+            auto byteAligned = reinterpret_cast<const char*>(data);
+            auto byteAlignedEnd = byteAligned + size;
+            data_.insert(data_.begin() + insertion.offset, byteAligned, byteAlignedEnd);
+        }
+
         void erase_element(size_type pos)
         {
+            /* Get entry to erase */
             auto entry = chart_.at(pos);
+
+            /* Erase element from chart and update offsets of successive elements */
             chart_.erase(chart_.begin() + pos);
+            for (size_type i = pos, n = chart_.size(); i < n; ++i)
+                chart_[i].offset -= entry.size;
+
+            /* Erase element from data storage */
             data_.erase(data_.begin() + entry.offset, data_.begin() + entry.offset + entry.size);
         }
 
-        void push_back_raw(const void* data, size_type size)
+        void push_back_element(const void* data, size_type size)
         {
             /* Add element to chart */
             element entry { data_.size(), size };
             chart_.push_back(entry);
 
-            /* Resize buffer */
+            /* Resize buffer and copy element into buffer */
             data_.resize(entry.offset + size);
+            copy_element(data, entry);
+        }
 
-            /* Copy element into buffer */
-            copy(data, entry);
+        void pop_back_element()
+        {
+            /* Erase last element from the chart and data storage */
+            data_.resize(data_.size() - chart_.back().size);
+            chart_.pop_back();
         }
 
         Base* get_base(size_type pos)

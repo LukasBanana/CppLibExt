@@ -61,6 +61,7 @@ void packed_vector_test()
 
     A a;
     B b;
+    b.x = 4;
 
     auto aRef = &a;
     auto bRef = &b;
@@ -71,6 +72,10 @@ void packed_vector_test()
 
     auto aGet = list.get<A>(0);
     auto bGet = list.get<B>(1);
+
+    b.x = -3;
+    b.y = 7;
+    list.insert(list.begin(), b);
 
     for (size_t i = 0; i < list.size(); ++i)
     {
@@ -92,9 +97,46 @@ void packed_vector_test()
             int _unused=0;
     }
 
-    packed_vector<A>::iterator it;
-    it += 4;
+    auto it = list.begin();
+    auto obj0 = it[0];
+}
 
+void packed_vector_test2()
+{
+    struct BaseA
+    {
+        virtual ~BaseA() {};
+    
+        int ba_x;
+    };
+
+    struct BaseB
+    {
+        virtual ~BaseB() {};
+    
+        int bb_x;
+    };
+
+    struct DerivedB : public BaseA, public BaseB
+    {
+        int db_x;
+    };
+
+    packed_vector<BaseA> list;
+    list.push_back(DerivedB());
+    
+    DerivedB derived;
+    BaseA* ptr = &derived;
+
+    DerivedB* ptr2 = dynamic_cast<DerivedB*>(ptr);
+    if (!ptr2)
+        std::cerr << "Error: ptr2 == nulltpr\n";
+    else if (ptr2 != &derived)
+        std::cerr << "Error: ptr wrong value\n";
+    
+    DerivedB* ptr3 = list.get_ptr<DerivedB>(0);
+    if (!ptr3)
+        std::cerr << "Error: ptr3 == nulltpr\n";
 }
 
 int main()
@@ -229,6 +271,7 @@ int main()
         /* --- packed_vector tests --- */
 
         packed_vector_test();
+        packed_vector_test2();
     }
     catch (const std::exception& err)
     {
