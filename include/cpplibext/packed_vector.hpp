@@ -16,6 +16,7 @@
 #include <type_traits>
 #include <algorithm>
 #include <exception>
+#include <iterator>
 
 
 namespace ext
@@ -61,8 +62,183 @@ template <typename Base> class packed_vector
         
         /* --- Type definitions --- */
 
-        typedef std::vector<char>       storage_type;
-        typedef storage_type::size_type size_type;
+        typedef std::vector<char>           storage_type;
+        typedef storage_type::size_type     size_type;
+
+    private:
+        
+        struct element
+        {
+            size_type offset, size;
+        };
+
+        typedef std::vector<element> chart_type;
+
+        /* --- Members --- */
+
+        chart_type      chart_; //!< Element offset chart.
+        storage_type    data_;  //!< Data storage.
+
+        /* --- Iterators --- */
+
+        /**
+        Base iterator class for packed_vector.
+        \tparam BaseType Must be either 'Base' or 'const Base'.
+        \tparam ChartType Must be either 'chart_type' or 'const chart_type'.
+        \tparam StorageType Must be either 'storage_type' or 'const storage_type'.
+        */
+        template <typename BaseType, typename ChartType, typename StorageType>
+        class base_iterator : public std::iterator<std::random_access_iterator_tag, BaseType>
+        {
+            
+            private:
+                
+                typedef base_iterator<BaseType, ChartType, StorageType> this_type;
+            
+            public:
+                
+                base_iterator() = default;
+
+                /* --- Comparision operators --- */
+
+                bool operator == (const this_type& other) const
+                {
+                    return
+                        pos_        == other.pos_       &&
+                        chartRef_   == other.chartRef_  &&
+                        dataRef_    == other.dataRef_;
+                }
+                bool operator != (const this_type& other) const
+                {
+                    return !(*this == other);
+                }
+
+                bool operator < (const this_type& other) const
+                {
+                    return
+                        pos_        <  other.pos_       &&
+                        chartRef_   == other.chartRef_  &&
+                        dataRef_    == other.dataRef_;
+                }
+                bool operator <= (const this_type& other) const
+                {
+                    return
+                        pos_        <=  other.pos_      &&
+                        chartRef_   == other.chartRef_  &&
+                        dataRef_    == other.dataRef_;
+                }
+
+                bool operator > (const this_type& other) const
+                {
+                    return
+                        pos_        >  other.pos_       &&
+                        chartRef_   == other.chartRef_  &&
+                        dataRef_    == other.dataRef_;
+                }
+                bool operator >= (const this_type& other) const
+                {
+                    return
+                        pos_        >= other.pos_       &&
+                        chartRef_   == other.chartRef_  &&
+                        dataRef_    == other.dataRef_;
+                }
+
+                /* --- Access operators --- */
+
+                reference operator * () const
+                {
+                    auto offset = chartRef_->at(pos_).offset;
+                    return *reinterpret_cast<BaseType*>(&((*dataRef_)[offset]));
+                }
+                pointer operator -> () const
+                {
+                    auto offset = chartRef_->at(pos_).offset;
+                    return reinterpret_cast<BaseType*>(&((*dataRef_)[offset]));
+                }
+
+                /* --- Iteration operators --- */
+
+                this_type& operator ++ ()
+                {
+                    ++pos_;
+                    return *this;
+                }
+                this_type operator ++ (int)
+                {
+                    auto tmp(*this);
+                    operator ++ ();
+                    return this;
+                }
+
+                this_type& operator -- ()
+                {
+                    --pos_;
+                    return *this;
+                }
+                this_type operator -- (int)
+                {
+                    auto tmp(*this);
+                    operator -- ();
+                    return tmp;
+                }
+
+                this_type& operator += (const difference_type& offset)
+                {
+                    pos_ += offset;
+                    return *this;
+                }
+                this_type operator + (const difference_type& offset) const
+                {
+                    auto tmp(*this);
+                    tmp.pos_ += offset;
+                    return tmp;
+                }
+
+                this_type& operator -= (const difference_type& offset)
+                {
+                    pos_ -= offset;
+                    return *this;
+                }
+                this_type operator - (const difference_type& offset) const
+                {
+                    auto tmp(*this);
+                    tmp.pos_ -= offset;
+                    return tmp;
+                }
+
+                /* --- Functions --- */
+
+                //! Returns true if this iterator points to a valid element of its container.
+                bool valid() const
+                {
+                    return pos_ < chartRef->size();
+                }
+
+            protected:
+                
+                friend class packed_vector;
+
+                base_iterator(size_type pos, ChartType* chartRef, StorageType* dataRef) :
+                    pos_        { pos      },
+                    chartRef_   { chartRef },
+                    dataRef_    { dataRef  }
+                {
+                }
+
+            private:
+                
+                size_type       pos_        = 0;
+                ChartType*      chartRef_   = nullptr;
+                StorageType*    dataRef_    = nullptr;
+
+        };
+
+    public:
+        
+        /* --- Type definitions --- */
+
+        typedef base_iterator<Base, chart_type, storage_type>                   iterator;
+        typedef base_iterator<const Base, const chart_type, const storage_type> const_iterator;
 
         /* --- Functions --- */
 
@@ -77,10 +253,26 @@ template <typename Base> class packed_vector
             assert_base_type();
         }
 
+        /**
+        Appends the specified element to the end of the container.
+        \tparam Target Specifies the element data type. This must be from the type 'Base' or a derived type from 'Base'.
+        \param[in] val Specifies the new element which is to be added.
+        */
         template <typename Target> void push_back(const Target& val)
         {
             assert_target_type<Target>();
             push_back_raw(&val, sizeof(val));
+        }
+
+        //! Erases the last element from the container. The container must not be empty!
+        void pop_back()
+        {
+            erase_element(size() - 1);
+        }
+        //! Erases the frist element from the container. The container must not be empty!
+        void pop_front()
+        {
+            erase_element(0);
         }
 
         /**
@@ -122,12 +314,37 @@ template <typename Base> class packed_vector
             return chart_.size();
         }
 
+        //! Returns true if this container is empty.
+        bool empty() const
+        {
+            return chart_.empty();
+        }
+
+        //! Returns an iterator which points to the first element.
+        iterator begin()
+        {
+            return iterator(0, &chart_, &data_);
+        }
+        //! Returns a constant iterator which points to the first element.
+        const_iterator begin() const
+        {
+            return const_iterator(0, &chart_, &data_);
+        }
+
+        //! Returns an iterator which points after the last element.
+        iterator end()
+        {
+            return iterator(size(), &chart_, &data_);
+        }
+        //! Returns a constant iterator which points after the last element.
+        const_iterator end() const
+        {
+            return const_iterator(size(), &chart_, &data_);
+        }
+
     private:
         
-        struct element
-        {
-            size_type offset, size;
-        };
+        /* --- Functions --- */
 
         void assert_base_type()
         {
@@ -144,6 +361,13 @@ template <typename Base> class packed_vector
             auto byteAligned = reinterpret_cast<const char*>(data);
             for (size_type i = 0; i < entry.size; ++i)
                 data_[entry.offset + i] = byteAligned[i];
+        }
+
+        void erase_element(size_type pos)
+        {
+            auto entry = chart_.at(pos);
+            chart_.erase(chart_.begin() + pos);
+            data_.erase(data_.begin() + entry.offset, data_.begin() + entry.offset + entry.size);
         }
 
         void push_back_raw(const void* data, size_type size)
@@ -169,9 +393,6 @@ template <typename Base> class packed_vector
             auto entry = chart_.at(pos);
             return reinterpret_cast<const Base*>(&data_[entry.offset]);
         }
-
-        std::vector<element> chart_;
-        storage_type data_;
 
 };
 

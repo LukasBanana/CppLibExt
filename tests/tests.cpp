@@ -79,6 +79,22 @@ void packed_vector_test()
         int _unused=0;
     }
 
+    for (auto it = list.begin(); it != list.end(); ++it)
+    {
+        auto obj = *it;
+        int _unused=0;
+    }
+
+    for (auto& entry : list)
+    {
+        auto obj = dynamic_cast<B*>(&entry);
+        if (obj)
+            int _unused=0;
+    }
+
+    packed_vector<A>::iterator it;
+    it += 4;
+
 }
 
 int main()
