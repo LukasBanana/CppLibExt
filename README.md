@@ -29,6 +29,13 @@ multiArray[2][5][0] = 4; // No overhead here in memory and speed compared to 'cl
 
 /* --- packed_vector --- */
 
+/*
+"std::vector" allows only a single type for all its elements.
+"packed_vector" has a base type and allows inserting elements of any derived class.
+All elements are still stored inside a single coherent memory block instead of distributed memory chunks.
+This can be a good performance boost when storing lots of small different classes inside a single container.
+*/
+
 struct A
 {
 	virtual ~A()
