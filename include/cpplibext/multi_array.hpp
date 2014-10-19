@@ -29,8 +29,15 @@ namespace ext
 Multi dimensional array class.
 \tparam T Specifies the data type for the array elements.
 \tparam Dimensions... Specifies the array dimensions. This must be at least 1 entry.
+\code
+// Example usage:
+ext::multi_array<float, 3, 2, 4> ary;
+ary[0]       = 1; // Write 1's into all ary[0][i][j] where 0 <= i < 2 and 0 <= j < 4.
+ary[1][1]    = 2; // Write 2's into all ary[1][1][i] where 0 <= i < 4.
+ary[2][0][3] = 4; // Write a single 4 into ary[2][0][3].
+\endcode
 */
-template <class T, std::size_t... Dimensions> class multi_array
+template <typename T, std::size_t... Dimensions> class multi_array
 {
     
     public:
@@ -412,7 +419,7 @@ Multi dimensional array class.
 \tparam T Specifies the data type for the array elements.
 \remarks This is a template specialization of the multi-dimensional multi_array class.
 */
-template <class T, std::size_t Dimension> class multi_array<T, Dimension>
+template <typename T, std::size_t Dimension> class multi_array<T, Dimension>
 {
     
     public:

@@ -15,6 +15,7 @@
 #include <cpplibext/multi_array.hpp>
 #include <cpplibext/range_iterator.hpp>
 #include <cpplibext/make_array.hpp>
+#include <cpplibext/packed_vector.hpp>
 
 
 using namespace ext;
@@ -36,6 +37,48 @@ NOINLINE int Get(const ClassicArray& a, size_t x, size_t y, size_t z)
 NOINLINE int Get(const LukasArray& a, size_t x, size_t y, size_t z)
 {
     return a[x][y][z];
+}
+
+void packed_vector_test()
+{
+    struct A
+    {
+        virtual ~A()
+        {
+        }
+        int x = 1;
+    };
+    struct B : public A
+    {
+        int y = 2;
+    };
+    struct C
+    {
+        int z = 3;
+    };
+    
+    packed_vector<A> list;
+
+    A a;
+    B b;
+
+    auto aRef = &a;
+    auto bRef = &b;
+    A* bARef = &b;
+
+    list.push_back(a);
+    list.push_back(b);
+
+    auto aGet = list.get<A>(0);
+    auto bGet = list.get<B>(1);
+
+    for (size_t i = 0; i < list.size(); ++i)
+    {
+        auto a = list.get_ptr<A>(i);
+
+        int _unused=0;
+    }
+
 }
 
 int main()
@@ -144,8 +187,11 @@ int main()
 
         /* --- range_iterator tests --- */
 
+        #ifdef _MSC_VER
+        
         std::cout << std::endl;
-        for (const_range_iterator<decltype(my_array)> it { my_array }; !it.reached_end(); ++it)
+        //for (const_range_iterator<decltype(my_array)> it { my_array }; !it.reached_end(); ++it)
+        for (const_range_iterator<my_array_t> it { my_array }; !it.reached_end(); ++it)
             std::cout << "range_iterator: " << *it << std::endl;
 
         struct TestStruct
@@ -161,6 +207,12 @@ int main()
         std::cout << std::endl;
         for (auto s : testVec)
             std::cout << "a = " << s.a << ", b = " << s.b << std::endl;
+
+        #endif
+        
+        /* --- packed_vector tests --- */
+
+        packed_vector_test();
     }
     catch (const std::exception& err)
     {
@@ -168,7 +220,7 @@ int main()
     }
 
     auto ptr1 = make_shared_array<int>(10);
-    auto ptr2 = std::make_unique<int[]>(10);
+    //auto ptr2 = std::make_unique<int[]>(10);
 
     std::cout << std::endl;
     system("pause");

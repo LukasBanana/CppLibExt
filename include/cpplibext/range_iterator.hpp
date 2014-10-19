@@ -54,7 +54,7 @@ void ParseArguments(const_range_iterator<std::vector<std::string>> it)
 }
 \endcode
 */
-template <class Container, class BaseIterator> class base_range_iterator
+template <typename Container, typename BaseIterator> class base_range_iterator
 {
     
     public:
@@ -186,8 +186,8 @@ template <class Container, class BaseIterator> class base_range_iterator
 };
 
 
-template <class Container> using range_iterator = base_range_iterator<Container, typename Container::iterator>;
-template <class Container> using const_range_iterator = base_range_iterator<const Container, typename Container::const_iterator>;
+template <typename Container> using range_iterator = base_range_iterator<Container, typename Container::iterator>;
+template <typename Container> using const_range_iterator = base_range_iterator<const Container, typename Container::const_iterator>;
 
 
 /**
@@ -196,7 +196,7 @@ This iterator keeps track of its range end and supports additional exception han
 \tparam Container Specifies the container class type. This could be std::vector, std::array, std::string, multi_array etc.
 \tparam BaseIterator Specifies the container iterator type. This should be either 'Container::iterator' or 'Container::const_iterator'.
 */
-template <class Container, class BaseIterator> class base_range_forward_iterator
+template <typename Container, typename BaseIterator> class base_range_forward_iterator
 {
     
     public:
@@ -291,8 +291,8 @@ template <class Container, class BaseIterator> class base_range_forward_iterator
 };
 
 
-template <class Container> using range_forward_iterator = base_range_forward_iterator<Container, typename Container::iterator>;
-template <class Container> using const_range_forward_iterator = base_range_forward_iterator<const Container, typename Container::const_iterator>;
+template <typename Container> using range_forward_iterator = base_range_forward_iterator<Container, typename Container::iterator>;
+template <typename Container> using const_range_forward_iterator = base_range_forward_iterator<const Container, typename Container::const_iterator>;
 
 
 } // /namespace ext
