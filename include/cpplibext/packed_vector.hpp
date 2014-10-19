@@ -54,6 +54,7 @@ auto a = list.get<A>(0);
 auto b = list.get<B>(1);
 //auto c = list.get<C>(2); // 2 errors: 3rd element is of type 'B' and 'C' is not a derived type of 'A'.
 \endcode
+\todo Copy constructor is NOT called within a "push_back" or "insert"!
 */
 template <typename Base> class packed_vector
 {
@@ -67,6 +68,7 @@ template <typename Base> class packed_vector
 
     private:
         
+        //! Structure to store meta data for each element in the data storage.
         struct element
         {
             size_type offset;       //!< Offset (in bytes) where the element starts.

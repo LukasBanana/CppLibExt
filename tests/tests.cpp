@@ -11,6 +11,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+#include <chrono>
+#include <memory>
 
 #include <cpplibext/multi_array.hpp>
 #include <cpplibext/range_iterator.hpp>
@@ -327,8 +329,80 @@ void packed_vector_test3()
     list.push_back(B());
 
     #endif
-    
-    
+}
+
+void packed_vector_performance_test()
+{
+    const size_t num = 1000000;
+
+    struct A
+    {
+        virtual ~A() {}
+        int x = 1;
+        float test[50];
+    };
+    struct B : public A
+    {
+        int y = 2;
+        float test2[50];
+    };
+
+    // --- std::vector --- //
+    {
+        std::cout << "std::vector performance test:" << std::endl;
+
+        std::vector<A*> list;
+        for (size_t i = 0; i < num; ++i)
+            list.push_back(new B());
+
+        int x = 0;
+        auto start = std::chrono::steady_clock::now();
+        {
+            /*for (auto& obj : list)
+                x += dynamic_cast<B*>(obj)->x;
+            for (auto& obj : list)
+                x += dynamic_cast<B*>(obj)->y;*/
+
+            for (size_t i = 0, n = list.size(); i < n; ++i)
+                x -= dynamic_cast<B*>(list[i])->x;
+            for (size_t i = 0, n = list.size(); i < n; ++i)
+                x += dynamic_cast<B*>(list[i])->x;
+        }
+        auto end = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+        std::cout << "x = " << x << " (Duration = " << duration << " ms.)" << std::endl;
+
+        for (auto& obj : list)
+            delete obj;
+    }
+
+    // --- packed_vector --- //
+    {
+        std::cout << "ext::packed_vector performance test:" << std::endl;
+
+        packed_vector<A> list;
+        for (size_t i = 0; i < num; ++i)
+            list.push_back(B());
+
+        int x = 0;
+        auto start = std::chrono::steady_clock::now();
+        {
+            /*for (auto& obj : list)
+                x += dynamic_cast<B*>(&obj)->x;
+            for (auto& obj : list)
+                x += dynamic_cast<B*>(&obj)->y;*/
+
+            for (size_t i = 0, n = list.size(); i < n; ++i)
+                x -= list.get<B>(i).x;
+            for (size_t i = 0, n = list.size(); i < n; ++i)
+                x += list.get<B>(i).x;
+        }
+        auto end = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+        std::cout << "x = " << x << " (Duration = " << duration << " ms.)" << std::endl;
+    }
 }
 
 int main()
@@ -336,9 +410,11 @@ int main()
     try
     {
         //multi_array_test();
+
         packed_vector_test();
         packed_vector_test2();
         packed_vector_test3();
+        packed_vector_performance_test();
     }
     catch (const std::exception& err)
     {
