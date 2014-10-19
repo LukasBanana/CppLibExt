@@ -26,7 +26,9 @@ ext::multi_array<int, 4, 10, 2> multiArray;
 multiArray[2] = 3; // Set a value for an entire 'slice' (i.e. multiArray[2][x][y] = 3 for all 0 <= x < 10 and 0 <= y < 2)
 multiArray[2][5][0] = 4; // No overhead here in memory and speed compared to 'classicArray'
 
+
 /* --- packed_vector --- */
+
 struct A
 {
 	virtual ~A()
