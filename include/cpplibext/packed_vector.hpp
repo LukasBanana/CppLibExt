@@ -69,7 +69,9 @@ template <typename Base> class packed_vector
         
         struct element
         {
-            size_type offset, size;
+            size_type offset;       //!< Offset (in bytes) where the element starts.
+            size_type size;         //!< Size of this element (in bytes).
+            size_type base_offset;  //!< Base offset (in bytes) for the 'Base' type.
         };
 
         typedef std::vector<element> chart_type;
@@ -78,6 +80,15 @@ template <typename Base> class packed_vector
 
         chart_type      chart_; //!< Element offset chart.
         storage_type    data_;  //!< Data storage.
+
+        /* --- Functions --- */
+
+        template <typename Target> size_type get_base_offset(const Target& val)
+        {
+            assert_target_type<Target>();
+            const auto basePtr = static_cast<const Base*>(&val);
+            return reinterpret_cast<size_type>(basePtr) - reinterpret_cast<size_type>(&val);
+        }
 
         /* --- Iterators --- */
 
@@ -147,13 +158,13 @@ template <typename Base> class packed_vector
 
                 reference operator * () const
                 {
-                    auto offset = chartRef_->at(pos_).offset;
-                    return *reinterpret_cast<BaseType*>(&((*dataRef_)[offset]));
+                    auto entry = chartRef_->at(pos_);
+                    return *reinterpret_cast<BaseType*>(&(*dataRef_)[entry.offset + entry.base_offset]);
                 }
                 pointer operator -> () const
                 {
-                    auto offset = chartRef_->at(pos_).offset;
-                    return reinterpret_cast<BaseType*>(&((*dataRef_)[offset]));
+                    auto entry = chartRef_->at(pos_);
+                    return reinterpret_cast<BaseType*>(&(*dataRef_)[entry.offset + entry.base_offset]);
                 }
 
                 reference operator [] (const difference_type& offset) const
@@ -267,6 +278,11 @@ template <typename Base> class packed_vector
         {
             assert_base_type();
         }
+        ~packed_vector()
+        {
+            for (const auto& entry : chart_)
+                destruct(entry);
+        }
 
         /**
         Inserts the specified element into the container.
@@ -275,8 +291,7 @@ template <typename Base> class packed_vector
         */
         template <typename Target> iterator insert(const_iterator pos, const Target& val)
         {
-            assert_target_type<Target>();
-            insert_element(&val, sizeof(val), pos.pos_);
+            insert_element(&val, sizeof(val), pos.pos_, get_base_offset(val));
             return begin() + pos.pos_;
         }
 
@@ -293,8 +308,7 @@ template <typename Base> class packed_vector
         */
         template <typename Target> void push_back(const Target& val)
         {
-            assert_target_type<Target>();
-            push_back_element(&val, sizeof(val));
+            push_back_element(&val, sizeof(val), get_base_offset(val));
         }
 
         /**
@@ -387,6 +401,24 @@ template <typename Base> class packed_vector
             static_assert(std::is_base_of<Base, Target>::value, "'Target' must be a base of 'Base' in packed_vector");
         }
 
+        Base* get_base(const element& entry)
+        {
+            return reinterpret_cast<Base*>(&data_[entry.offset + entry.base_offset]);
+        }
+        const Base* get_base(const element& entry) const
+        {
+            return reinterpret_cast<const Base*>(&data_[entry.offset + entry.base_offset]);
+        }
+
+        Base* get_base(size_type pos)
+        {
+            return get_base(chart_.at(pos));
+        }
+        const Base* get_base(size_type pos) const
+        {
+            return get_base(chart_.at(pos));
+        }
+
         void copy_element(const void* data, const element& entry)
         {
             auto byteAligned = reinterpret_cast<const char*>(data);
@@ -394,13 +426,23 @@ template <typename Base> class packed_vector
                 data_[entry.offset + i] = byteAligned[i];
         }
 
-        void insert_element(const void* data, size_type size, size_type pos)
+        void destruct(const element& entry)
+        {
+            /*
+            Call destructor of base class explicitly.
+            Since a base class must have a virtual destructor,
+            the correct sequence or destructors will be called here.
+            */
+            get_base(entry)->~Base();
+        }
+
+        void insert_element(const void* data, size_type size, size_type pos, size_type base_offset)
         {
             /* Get insertion position */
             auto insertion = chart_.at(pos);
 
             /* Insert element into chart and update offsets of successive elements */
-            element entry { insertion.offset, size };
+            element entry { insertion.offset, size, base_offset };
             chart_.insert(chart_.begin() + pos, entry);
             for (size_type i = pos + 1, n = chart_.size(); i < n; ++i)
                 chart_[i].offset += size;
@@ -416,6 +458,9 @@ template <typename Base> class packed_vector
             /* Get entry to erase */
             auto entry = chart_.at(pos);
 
+            /* Destruct element */
+            destruct(entry);
+
             /* Erase element from chart and update offsets of successive elements */
             chart_.erase(chart_.begin() + pos);
             for (size_type i = pos, n = chart_.size(); i < n; ++i)
@@ -425,10 +470,10 @@ template <typename Base> class packed_vector
             data_.erase(data_.begin() + entry.offset, data_.begin() + entry.offset + entry.size);
         }
 
-        void push_back_element(const void* data, size_type size)
+        void push_back_element(const void* data, size_type size, size_type base_offset)
         {
             /* Add element to chart */
-            element entry { data_.size(), size };
+            element entry { data_.size(), size, base_offset };
             chart_.push_back(entry);
 
             /* Resize buffer and copy element into buffer */
@@ -438,20 +483,12 @@ template <typename Base> class packed_vector
 
         void pop_back_element()
         {
+            /* Destruct element */
+            destruct(chart_.back());
+
             /* Erase last element from the chart and data storage */
             data_.resize(data_.size() - chart_.back().size);
             chart_.pop_back();
-        }
-
-        Base* get_base(size_type pos)
-        {
-            auto entry = chart_.at(pos);
-            return reinterpret_cast<Base*>(&data_[entry.offset]);
-        }
-        const Base* get_base(size_type pos) const
-        {
-            auto entry = chart_.at(pos);
-            return reinterpret_cast<const Base*>(&data_[entry.offset]);
         }
 
 };
