@@ -389,6 +389,17 @@ template <typename Base> class packed_vector
             return const_iterator(size(), &chart_, &data_);
         }
 
+        /* --- Operators --- */
+
+        Base& operator [] (size_type pos)
+        {
+            return *get_base(pos);
+        }
+        const Base& operator [] (size_type pos) const
+        {
+            return *get_base(pos);
+        }
+
     private:
         
         /* --- Functions --- */

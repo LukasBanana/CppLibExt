@@ -333,7 +333,9 @@ void packed_vector_test3()
 
 void packed_vector_performance_test()
 {
-    const size_t num = 1000000;
+    static const size_t num = 1000000;
+    static const size_t numLists = 10;
+    static const size_t showLists = 1;
 
     struct A
     {
@@ -351,57 +353,52 @@ void packed_vector_performance_test()
     {
         std::cout << "std::vector performance test:" << std::endl;
 
-        std::vector<A*> list;
+        std::vector<A*> list[numLists];
         for (size_t i = 0; i < num; ++i)
-            list.push_back(new B());
+            list[i % numLists].push_back(new B());
 
         int x = 0;
-        auto start = std::chrono::steady_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         {
-            /*for (auto& obj : list)
-                x += dynamic_cast<B*>(obj)->x;
-            for (auto& obj : list)
-                x += dynamic_cast<B*>(obj)->y;*/
-
-            for (size_t i = 0, n = list.size(); i < n; ++i)
-                x -= dynamic_cast<B*>(list[i])->x;
-            for (size_t i = 0, n = list.size(); i < n; ++i)
-                x += dynamic_cast<B*>(list[i])->x;
+            for (size_t i = 0; i < showLists; ++i)
+            {
+                for (size_t j = 0, n = list[i].size(); j < n; ++j)
+                    x += static_cast<B*>((list[i])[j])->y;
+            }
         }
-        auto end = std::chrono::steady_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
-        std::cout << "x = " << x << " (Duration = " << duration << " ms.)" << std::endl;
+        std::cout << "x = " << x << " ( Duration = " << duration << " )" << std::endl;
 
-        for (auto& obj : list)
-            delete obj;
+        for (size_t i = 0; i < numLists; ++i)
+        {
+            for (auto& obj : list[i])
+                delete obj;
+        }
     }
 
     // --- packed_vector --- //
     {
         std::cout << "ext::packed_vector performance test:" << std::endl;
 
-        packed_vector<A> list;
+        packed_vector<A> list[numLists];
         for (size_t i = 0; i < num; ++i)
-            list.push_back(B());
+            list[i % numLists].push_back(B());
 
         int x = 0;
-        auto start = std::chrono::steady_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         {
-            /*for (auto& obj : list)
-                x += dynamic_cast<B*>(&obj)->x;
-            for (auto& obj : list)
-                x += dynamic_cast<B*>(&obj)->y;*/
-
-            for (size_t i = 0, n = list.size(); i < n; ++i)
-                x -= list.get<B>(i).x;
-            for (size_t i = 0, n = list.size(); i < n; ++i)
-                x += list.get<B>(i).x;
+            for (size_t i = 0; i < showLists; ++i)
+            {
+                for (size_t j = 0, n = list[i].size(); j < n; ++j)
+                    x += static_cast<B*>(&(list[i])[j])->y;
+            }
         }
-        auto end = std::chrono::steady_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
-        std::cout << "x = " << x << " (Duration = " << duration << " ms.)" << std::endl;
+        std::cout << "x = " << x << " ( Duration = " << duration << " )" << std::endl;
     }
 }
 
