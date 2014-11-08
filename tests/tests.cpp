@@ -18,6 +18,7 @@
 #include <cpplibext/range_iterator.hpp>
 #include <cpplibext/make_array.hpp>
 #include <cpplibext/packed_vector.hpp>
+#include <cpplibext/flexible_stack.hpp>
 
 
 using namespace ext;
@@ -402,16 +403,46 @@ void packed_vector_performance_test()
     }
 }
 
+/* --- flexible_stack test --- */
+
+void flexible_stack_test()
+{
+    flexible_stack<> stack;
+
+    stack.push('x', 0);
+    stack.push(7, 1);
+    stack.push(3.4f, 2);
+    stack.push(0.5, 3);
+
+    std::cout << "stack size = " << stack.size() << std::endl;
+
+    while (!stack.empty())
+    {
+        switch (stack.top_id())
+        {
+            case 0: std::cout << stack.top<char>() << std::endl; break;
+            case 1: std::cout << stack.top<int>() << std::endl; break;
+            case 2: std::cout << stack.top<float>() << std::endl; break;
+            case 3: std::cout << stack.top<double>() << std::endl; break;
+        }
+        stack.pop();
+    }
+
+    std::cout << "stack size = " << stack.size() << std::endl;
+}
+
 int main()
 {
     try
     {
         //multi_array_test();
 
-        packed_vector_test();
+        /*packed_vector_test();
         packed_vector_test2();
         packed_vector_test3();
-        packed_vector_performance_test();
+        packed_vector_performance_test();*/
+
+        flexible_stack_test();
     }
     catch (const std::exception& err)
     {
