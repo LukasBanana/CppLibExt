@@ -15,6 +15,7 @@
 #include <vector>
 #include <string>
 #include <exception>
+#include <type_traits>
 
 
 namespace ext
@@ -80,13 +81,13 @@ template <typename IDType> class flexible_stack
 
         /* --- Functions --- */
 
-        template <typename Data> void assert_element_size()
+        template <typename T> void assert_element_size()
         {
-            if (sizeof(Data) != valSize_)
+            if (sizeof(T) != valSize_)
             {
                 throw std::length_error(
                     "data type size mismatch: stored " + std::to_string(valSize_) +
-                    " bytes but required " + std::to_string(sizeof(Data)) + " bytes"
+                    " bytes but required " + std::to_string(sizeof(T)) + " bytes"
                 );
             }
         }
@@ -133,34 +134,34 @@ template <typename IDType> class flexible_stack
 
         /**
         Pushes the specified value onto the stack.
-        \tparam Data Specifies the data type. This can be a primitive type or any class or structure type.
+        \tparam T Specifies the data type. This can be a primitive type or any class or structure type.
         \param[in] val Specifies the value which is to be pushed onto the stack.
         \param[in] id Specifies the data type id. This should be a unique identifier for each data type.
         */
-        template <typename Data> void push(const Data& val, const id_type& id)
+        template <typename T> void push(const T& val, const id_type& id)
         {
-            static_assert(sizeof(Data) > 0, "can not push data with no size");
+            static_assert(std::is_trivially_copyable<T>::value, "flexible_stack can only store trivially copyable objects");
 
             /* Increase storage */
             auto pos = data_.size();
-            data_.resize(pos + sizeof(Data) + meta_size());
+            data_.resize(pos + sizeof(T) + meta_size());
 
             /* Store value offset */
             valOffset_ = pos;
             
             /* Store value */
-            memcpy(&data_[pos], &val, sizeof(Data));
-            pos += sizeof(Data);
+            memcpy(&data_[pos], &val, sizeof(T));
+            pos += sizeof(T);
 
             /* Store id */
             *reinterpret_cast<id_type*>(&data_[pos]) = id;
             pos += sizeof(id_type);
 
             /* Store size */
-            *reinterpret_cast<size_type*>(&data_[pos]) = sizeof(Data);
+            *reinterpret_cast<size_type*>(&data_[pos]) = sizeof(T);
 
             /* Store current value state */
-            valSize_ = sizeof(Data);
+            valSize_ = sizeof(T);
             valId_  = id;
             ++size_;
         }
@@ -202,24 +203,24 @@ template <typename IDType> class flexible_stack
 
         /**
         Returns a reference to the top element.
-        \tparam Data Specifies the data type which has been stored when "push" was called.
-        \throws std::length_error When the size of 'Data' is not equal to the size of the top element.
+        \tparam T Specifies the data type which has been stored when "push" was called.
+        \throws std::length_error When the size of 'T' is not equal to the size of the top element.
         */
-        template <typename Data> Data& top()
+        template <typename T> T& top()
         {
-            assert_element_size<Data>();
-            return *reinterpret_cast<Data*>(&data_[valOffset_]);
+            assert_element_size<T>();
+            return *reinterpret_cast<T*>(&data_[valOffset_]);
         }
 
         /**
         Returns a constant reference to the top element.
-        \tparam Data Specifies the data type which has been stored when "push" was called.
-        \throws std::length_error When the size of 'Data' is not equal to the size of the top element.
+        \tparam T Specifies the data type which has been stored when "push" was called.
+        \throws std::length_error When the size of 'T' is not equal to the size of the top element.
         */
-        template <typename Data> const Data& top() const
+        template <typename T> const T& top() const
         {
-            assert_element_size<Data>();
-            return *reinterpret_cast<const Data*>(&data_[valOffset_]);
+            assert_element_size<T>();
+            return *reinterpret_cast<const T*>(&data_[valOffset_]);
         }
 
 };
