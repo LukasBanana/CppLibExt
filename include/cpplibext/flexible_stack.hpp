@@ -24,14 +24,14 @@ namespace ext
 /**
 The flexible stack allows you to store elements of different sizes.
 \code
-flexible_stack myStack;
-
 enum TypeIds
 {
     TYPEID_CHAR = 0,
     TYPEID_FLOAT,
     TYPEID_DOUBLE
 };
+
+flexible_stack<TypeIds> myStack;
 
 myStack.push('x', TYPEID_CHAR); // push char
 myStack.push(3.14f, TYPEID_FLOAT); // push float
@@ -57,7 +57,7 @@ while (!myStack.empty())
 }
 \endcode
 */
-template <typename IDType = int> class flexible_stack
+template <typename IDType> class flexible_stack
 {
     
     public:

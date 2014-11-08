@@ -407,7 +407,7 @@ void packed_vector_performance_test()
 
 void flexible_stack_test()
 {
-    flexible_stack<> stack;
+    flexible_stack<int> stack;
 
     stack.push('x', 0);
     stack.push(7, 1);
