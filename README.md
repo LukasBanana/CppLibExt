@@ -4,9 +4,10 @@ Introduction
 This is a small library of C++11 extensions.
 
 Current features:
-- multi_array
+- multi_array (multi dimensional array, similar to std::array)
 - range_iterator (in progress)
 - packed_vector (in progress)
+- flexible_stack (stack with flexible element sizes, similar to std::stack)
 
 Examples
 ========
@@ -63,5 +64,43 @@ list.push_back(B());
 auto a = list.get<A>(0);
 auto b = list.get<B>(1);
 //auto c = list.get<C>(2); // 2 errors: 3rd element is of type 'B' and 'C' is not a derived type of 'A'.
+
+
+/* --- flexible_stack --- */
+
+enum TypeIds
+{
+	ID_CHAR,
+	ID_INT,
+	ID_FLOAT,
+	ID_DOUBLE
+};
+
+flexible_stack<TypeIds> stack;
+
+stack.push('x', ID_CHAR);
+stack.push(1, ID_INT);
+stack.push(2.3f, ID_FLOAT);
+stack.push(4.5, ID_DOUBLE);
+
+while (!stack.empty())
+{
+	switch (stack.top_id())
+	{
+		case ID_CHAR:
+			char c = stack.top<char>();
+			break;
+		case ID_INT:
+			int i = stack.top<int>();
+			break;
+		case ID_FLOAT:
+			float f = stack.top<float>();
+			break;
+		case ID_DOUBLE:
+			double d = stack.top<double>();
+			break;
+	}
+	stack.pop();
+}
 
 ```
