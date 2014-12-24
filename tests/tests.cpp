@@ -19,6 +19,7 @@
 #include <cpplibext/make_array.hpp>
 #include <cpplibext/packed_vector.hpp>
 #include <cpplibext/flexible_stack.hpp>
+#include <cpplibext/grid_vector.hpp>
 
 
 using namespace ext;
@@ -431,6 +432,18 @@ void flexible_stack_test()
     std::cout << "stack size = " << stack.size() << std::endl;
 }
 
+/* --- grid_vector test -- */
+
+void grid_vector_test()
+{
+    grid_vector<int> grid;
+    grid.resize(10, 10);
+    
+    grid(0, 0) = 5;
+
+    std::cout << "grid size = ( " << grid.width() << ", " << grid.height() << " )" << std::endl;
+}
+
 int main()
 {
     try
@@ -442,7 +455,9 @@ int main()
         packed_vector_test3();
         packed_vector_performance_test();*/
 
-        flexible_stack_test();
+        //flexible_stack_test();
+
+        grid_vector_test();
     }
     catch (const std::exception& err)
     {
