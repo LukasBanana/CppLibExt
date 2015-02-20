@@ -134,7 +134,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
             fill(value);
         }
         multi_array(const this_array_type& other) :
-            data_(other.data_)
+            data_{ other.data_ }
         {
         }
         multi_array(const std::initializer_list<value_type>& list)
