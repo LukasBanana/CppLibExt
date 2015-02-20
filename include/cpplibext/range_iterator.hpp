@@ -71,15 +71,15 @@ template <typename Container, typename BaseIterator> class base_range_iterator
         typedef typename iterator_type::reference               reference;
 
         base_range_iterator(Container& container) :
-            begin_  ( container.begin() ),
-            end_    ( container.end()   ),
-            it_     ( begin_            )
+            begin_  { container.begin() },
+            end_    { container.end()   },
+            it_     { begin_            }
         {
         }
         base_range_iterator(iterator_type begin, iterator_type end) :
-            begin_  ( begin  ),
-            end_    ( end    ),
-            it_     ( begin_ )
+            begin_  { begin  },
+            end_    { end    },
+            it_     { begin_ }
         {
         }
 
@@ -213,13 +213,13 @@ template <typename Container, typename BaseIterator> class base_range_forward_it
         typedef typename iterator_type::reference               reference;
 
         base_range_forward_iterator(Container& container) :
-            end_    ( container.end()   ),
-            it_     ( container.begin() )
+            end_    { container.end()   },
+            it_     { container.begin() }
         {
         }
         base_range_forward_iterator(iterator_type begin, iterator_type end) :
-            end_    ( end   ),
-            it_     ( begin )
+            end_    { end   },
+            it_     { begin }
         {
         }
 
