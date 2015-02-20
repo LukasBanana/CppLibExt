@@ -20,6 +20,7 @@
 #include <cpplibext/packed_vector.hpp>
 #include <cpplibext/flexible_stack.hpp>
 #include <cpplibext/grid_vector.hpp>
+#include <cpplibext/command_line.hpp>
 
 
 using namespace ext;
@@ -444,7 +445,25 @@ void grid_vector_test()
     std::cout << "grid size = ( " << grid.width() << ", " << grid.height() << " )" << std::endl;
 }
 
-int main()
+/* --- command_line test --- */
+
+void command_line_test(int argc, char* argv[])
+{
+    command_line_parser parser;
+    auto cmdLine = parser.parse(argc, argv);
+
+    std::cout << "command line:" << std::endl;
+    for (auto arg : cmdLine.arguments())
+    {
+        std::cout << "  " << arg.value() << std::endl;
+        for (auto opt : arg.options())
+            std::cout << "    " << opt << std::endl;
+    }
+}
+
+/* --- main --- */
+
+int main(int argc, char* argv[])
 {
     try
     {
@@ -457,7 +476,9 @@ int main()
 
         //flexible_stack_test();
 
-        grid_vector_test();
+        //grid_vector_test();
+
+        command_line_test(argc, argv);
     }
     catch (const std::exception& err)
     {
