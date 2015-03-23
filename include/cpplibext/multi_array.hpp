@@ -134,7 +134,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
             fill(value);
         }
         multi_array(const this_array_type& other) :
-            data_{ other.data_ }
+            data_( other.data_ )
         {
         }
         multi_array(const std::initializer_list<value_type>& list)
@@ -286,7 +286,8 @@ template <typename T, std::size_t... Dimensions> class multi_array
                 
                 friend class multi_array;
 
-                slice(pointer ptr) : ptr_(ptr)
+                slice(pointer ptr) :
+                    ptr_( ptr )
                 {
                 }
 
@@ -321,7 +322,8 @@ template <typename T, std::size_t... Dimensions> class multi_array
                 
                 friend class multi_array;
 
-                slice(pointer ptr) : ptr_(ptr)
+                slice(pointer ptr) :
+                    ptr_( ptr )
                 {
                 }
 
@@ -350,7 +352,8 @@ template <typename T, std::size_t... Dimensions> class multi_array
                 
                 friend class multi_array;
 
-                const_slice(const_pointer ptr) : ptr_(ptr)
+                const_slice(const_pointer ptr) :
+                    ptr_( ptr )
                 {
                 }
 
@@ -379,7 +382,8 @@ template <typename T, std::size_t... Dimensions> class multi_array
                 
                 friend class multi_array;
 
-                const_slice(const_pointer ptr) : ptr_(ptr)
+                const_slice(const_pointer ptr) :
+                    ptr_( ptr )
                 {
                 }
 
@@ -470,7 +474,7 @@ template <typename T, std::size_t Dimension> class multi_array<T, Dimension>
             fill(value);
         }
         multi_array(const this_array_type& other) :
-            data_(other.data_)
+            data_( other.data_ )
         {
         }
         multi_array(const std::initializer_list<value_type>& list)

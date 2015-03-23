@@ -21,6 +21,7 @@
 #include <cpplibext/flexible_stack.hpp>
 #include <cpplibext/grid_vector.hpp>
 #include <cpplibext/command_line.hpp>
+#include <cpplibext/bit_mask.hpp>
 
 
 using namespace ext;
@@ -461,6 +462,20 @@ void command_line_test(int argc, char* argv[])
     }
 }
 
+/* --- bit_mask test --- */
+
+void bit_mask_test()
+{
+    bit_mask<int> flags;
+
+    flags << 0x01 << 0x08 << 0x200;
+
+    for (auto f : flags)
+        std::cout << "flag set: " << std::hex << f << std::endl;
+
+    int x=0;
+}
+
 /* --- main --- */
 
 int main(int argc, char* argv[])
@@ -478,7 +493,9 @@ int main(int argc, char* argv[])
 
         //grid_vector_test();
 
-        command_line_test(argc, argv);
+        //command_line_test(argc, argv);
+
+        bit_mask_test();
     }
     catch (const std::exception& err)
     {
