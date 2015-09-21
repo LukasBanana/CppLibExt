@@ -117,7 +117,7 @@ template <typename T> class bit_mask
 
         bit_mask() = default;
         bit_mask(const value_type& bitMask) :
-            bitMask_{ bitMask }
+            bits_( bitMask )
         {
         }
 
