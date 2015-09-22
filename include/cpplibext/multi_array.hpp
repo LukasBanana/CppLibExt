@@ -37,18 +37,21 @@ ary[1][1]    = 2; // Write 2's into all ary[1][1][i] where 0 <= i < 4.
 ary[2][0][3] = 4; // Write a single 4 into ary[2][0][3].
 \endcode
 */
-template <typename T, std::size_t... Dimensions> class multi_array
+template <typename T, std::size_t... Dimensions>
+class multi_array
 {
     
     public:
 
-        typedef T                   value_type;
-        typedef std::size_t         size_type;
-        typedef std::ptrdiff_t      difference_type;
-        typedef value_type&         reference;
-        typedef const value_type&   const_reference;
-        typedef value_type*         pointer;
-        typedef const value_type*   const_pointer;
+        static_assert(sizeof...(Dimensions) > 0, "multi_array must have at least 1 dimension");
+
+        using value_type        = T;
+        using size_type         = std::size_t;
+        using difference_type   = std::ptrdiff_t;
+        using reference         = value_type&;
+        using const_reference   = const value_type&;
+        using pointer           = value_type*;
+        using const_pointer     = const value_type*;
 
     private:
         
@@ -59,14 +62,16 @@ template <typename T, std::size_t... Dimensions> class multi_array
 
         /* --- Array size (Dimension1 * Dimension2 * ... * DimensionN) --- */
 
-        template <std::size_t... DimN> struct array_size
+        template <std::size_t... DimN>
+        struct array_size
         {
             static const size_type value = detail::product<size_type, DimN...>::value;
         };
 
         /* --- Next array size (Dimension2 * Dimension3 * ... * DimensionN) --- */
 
-        template <std::size_t FirstDimension, std::size_t... DimN> struct next_array_size
+        template <std::size_t FirstDimension, std::size_t... DimN>
+        struct next_array_size
         {
             /* Ignore first dimension here, just use the variadic template arguments */
             static const size_type value = detail::product<size_type, DimN...>::value;
@@ -74,7 +79,8 @@ template <typename T, std::size_t... Dimensions> class multi_array
 
         /* --- First dimension --- */
 
-        template <std::size_t FirstDimension, std::size_t... DimN> struct first_dimension
+        template <std::size_t FirstDimension, std::size_t... DimN>
+        struct first_dimension
         {
             /* Ignore variadic template arguments here, just use the first dimension */
             static const size_type value = FirstDimension;
@@ -83,14 +89,17 @@ template <typename T, std::size_t... Dimensions> class multi_array
         /* --- next_dimension --- */
 
         // Declaration for GCC and clang
-        template <std::size_t... DimN> struct next_dimension_secondary;
+        template <std::size_t... DimN>
+        struct next_dimension_secondary;
 
-        template <std::size_t FirstDimension, std::size_t... DimN> struct next_dimension
+        template <std::size_t FirstDimension, std::size_t... DimN>
+        struct next_dimension
         {
             static const size_type value = next_dimension_secondary<DimN...>::value;
         };
 
-        template <std::size_t... DimN> struct next_dimension_secondary
+        template <std::size_t... DimN>
+        struct next_dimension_secondary
         {
             static const size_type value = first_dimension<DimN...>::value;
         };
@@ -111,32 +120,32 @@ template <typename T, std::size_t... Dimensions> class multi_array
 
     private:
 
-        typedef multi_array<T, Dimensions...> this_array_type;
+        using this_array_type   = multi_array<T, Dimensions...>;
 
-        typedef std::array<value_type, num_elements> storage_type;
+        using storage_type      = std::array<value_type, num_elements>;
 
         //! Array data storage.
         storage_type data_;
 
     public:
 
-        typedef typename storage_type::iterator                  iterator;
-        typedef typename storage_type::const_iterator            const_iterator;
-        typedef typename storage_type::reverse_iterator          reverse_iterator;
-        typedef typename storage_type::const_reverse_iterator    const_reverse_iterator;
+        using iterator                  = typename storage_type::iterator;
+        using const_iterator            = typename storage_type::const_iterator;
+        using reverse_iterator          = typename storage_type::reverse_iterator;
+        using const_reverse_iterator    = typename storage_type::const_reverse_iterator;
 
-        multi_array()
-        {
-            static_assert(sizeof...(Dimensions) > 0, "multi_array must have at least 1 dimension");
-        }
+        multi_array() = default;
+
         multi_array(const value_type& value)
         {
             fill(value);
         }
+
         multi_array(const this_array_type& other) :
             data_( other.data_ )
         {
         }
+
         multi_array(const std::initializer_list<value_type>& list)
         {
             std::copy(list.begin(), list.end(), begin());
@@ -146,6 +155,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
         {
             return data_.data();
         }
+
         const_pointer data() const
         {
             return data_.data();
@@ -172,6 +182,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
         {
             return data_.begin();
         }
+
         const_iterator begin() const
         {
             return data_.begin();
@@ -181,6 +192,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
         {
             return data_.rbegin();
         }
+
         const_reverse_iterator rbegin() const
         {
             return data_.rend();
@@ -190,6 +202,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
         {
             return data_.end();
         }
+
         const_iterator end() const
         {
             return data_.end();
@@ -199,6 +212,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
         {
             return data_.rend();
         }
+
         const_reverse_iterator rend() const
         {
             return data_.rend();
@@ -208,6 +222,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
         {
             return data_.front();
         }
+
         const_reference front() const
         {
             return data_.front();
@@ -217,6 +232,7 @@ template <typename T, std::size_t... Dimensions> class multi_array
         {
             return data_.back();
         }
+
         const_reference back() const
         {
             return data_.back();
@@ -253,13 +269,15 @@ template <typename T, std::size_t... Dimensions> class multi_array
         \see num_dimensions
         \remarks This is the static version of "slices" which is faster than the dynamic version.
         */
-        template <size_type DimensionIndex> size_type slices() const
+        template <size_type DimensionIndex>
+        size_type slices() const
         {
             static_assert(DimensionIndex < num_dimensions, "multi_array::slice out of range");
             return detail::select<size_type, DimensionIndex, Dimensions...>::value;
         }
 
-        template <std::size_t CurrentDimension, std::size_t... NextDimensions> class slice
+        template <std::size_t CurrentDimension, std::size_t... NextDimensions>
+        class slice
         {
             
             public:
@@ -295,7 +313,8 @@ template <typename T, std::size_t... Dimensions> class multi_array
                 
         };
 
-        template <std::size_t Dimension1, std::size_t Dimension2> class slice<Dimension1, Dimension2>
+        template <std::size_t Dimension1, std::size_t Dimension2>
+        class slice<Dimension1, Dimension2>
         {
             
             public:
@@ -331,7 +350,8 @@ template <typename T, std::size_t... Dimensions> class multi_array
                 
         };
 
-        template <std::size_t CurrentDimension, std::size_t... NextDimensions> class const_slice
+        template <std::size_t CurrentDimension, std::size_t... NextDimensions>
+        class const_slice
         {
             
             public:
@@ -361,7 +381,8 @@ template <typename T, std::size_t... Dimensions> class multi_array
                 
         };
 
-        template <std::size_t Dimension1, std::size_t Dimension2> class const_slice<Dimension1, Dimension2>
+        template <std::size_t Dimension1, std::size_t Dimension2>
+        class const_slice<Dimension1, Dimension2>
         {
             
             public:
@@ -423,18 +444,19 @@ Multi dimensional array class.
 \tparam T Specifies the data type for the array elements.
 \remarks This is a template specialization of the multi-dimensional multi_array class.
 */
-template <typename T, std::size_t Dimension> class multi_array<T, Dimension>
+template <typename T, std::size_t Dimension>
+class multi_array<T, Dimension>
 {
     
     public:
 
-        typedef T                   value_type;
-        typedef std::size_t         size_type;
-        typedef std::ptrdiff_t      difference_type;
-        typedef value_type&         reference;
-        typedef const value_type&   const_reference;
-        typedef value_type*         pointer;
-        typedef const value_type*   const_pointer;
+        using value_type        = T;
+        using size_type         = std::size_t;
+        using difference_type   = std::ptrdiff_t;
+        using reference         = value_type&;
+        using const_reference   = const value_type&;
+        using pointer           = value_type*;
+        using const_pointer     = const value_type*;
 
     public:
         
@@ -452,31 +474,32 @@ template <typename T, std::size_t Dimension> class multi_array<T, Dimension>
 
     private:
 
-        typedef multi_array<T, Dimension> this_array_type;
+        using this_array_type   = multi_array<T, Dimension>;
 
-        typedef std::array<value_type, num_elements> storage_type;
+        using storage_type      = std::array<value_type, num_elements>;
 
         //! Array data storage.
         storage_type data_;
 
     public:
 
-        typedef typename storage_type::iterator                  iterator;
-        typedef typename storage_type::const_iterator            const_iterator;
-        typedef typename storage_type::reverse_iterator          reverse_iterator;
-        typedef typename storage_type::const_reverse_iterator    const_reverse_iterator;
+        using iterator                  = typename storage_type::iterator;
+        using const_iterator            = typename storage_type::const_iterator;
+        using reverse_iterator          = typename storage_type::reverse_iterator;
+        using const_reverse_iterator    = typename storage_type::const_reverse_iterator;
 
-        multi_array()
-        {
-        }
+        multi_array() = default;
+
         multi_array(const value_type& value)
         {
             fill(value);
         }
+
         multi_array(const this_array_type& other) :
             data_( other.data_ )
         {
         }
+
         multi_array(const std::initializer_list<value_type>& list)
         {
             std::copy(list.begin(), list.end(), begin());
@@ -592,7 +615,8 @@ template <typename T, std::size_t Dimension> class multi_array<T, Dimension>
         \see num_dimensions
         \remarks This is the static version of "slices" which is faster than the dynamic version.
         */
-        template <size_type DimensionIndex> size_type slices() const
+        template <size_type DimensionIndex>
+        size_type slices() const
         {
             static_assert(DimensionIndex < num_dimensions, "multi_array::slice out of range");
             return Dimension;

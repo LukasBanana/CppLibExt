@@ -26,21 +26,25 @@ product<int, 2, 5, 3>::value == 2*5*3 = 30;
 */
 
 // Declaration for GCC and clang
-template <typename T, T... XN> struct product_secondary;
+template <typename T, T... XN>
+struct product_secondary;
 
-template <typename T, T X1, T... XN> struct product
+template <typename T, T X1, T... XN>
+struct product
 {
     // Brackets are required!
     static const T value = (X1 * product_secondary<T, XN...>::value);
 };
 
-template <typename T, T... XN> struct product_secondary
+template <typename T, T... XN>
+struct product_secondary
 {
     // Brackets are required!
     static const T value = (product<T, XN...>::value);
 };
 
-template <typename T> struct product_secondary<T>
+template <typename T>
+struct product_secondary<T>
 {
     static const T value = T(1);
 };
