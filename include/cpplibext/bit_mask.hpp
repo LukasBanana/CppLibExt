@@ -25,16 +25,11 @@ template <typename T> class bit_mask
     
     public:
         
-        using value_type = T;
+        using value_type    = T;
+        using size_type     = std::size_t;
 
     private:
         
-        //! Returns the maximal bit flag.
-        static value_type max()
-        {
-            return T(1) << (sizeof(T) * 8 - 1);
-        }
-
         //! Bit iterator.
         template <typename U> class base_iterator
         {
@@ -121,6 +116,12 @@ template <typename T> class bit_mask
         {
         }
 
+        //! Returns the maximal bit flag.
+        static value_type max()
+        {
+            return T(1) << (sizeof(T) * 8 - 1);
+        }
+
         //! Returns true if the specified bit is set in this bit mask.
         bool find(const value_type& flag) const
         {
@@ -136,7 +137,7 @@ template <typename T> class bit_mask
         //! Removes the specifid bit flag.
         void erase(const value_type& flag)
         {
-            bits_ ^= (~flag);
+            bits_ &= (~flag);
         }
 
         // \see find
@@ -187,6 +188,18 @@ template <typename T> class bit_mask
         const_iterator end() const
         {
             return const_iterator(bits_, sizeof(T)*8);
+        }
+
+        /**
+        \brief Returns the number of bits set to one.
+        \remarks The complexity is O(n), where n is the number of bits 'value_type' has (i.e. n = sizeof(T)*8).
+        */
+        size_type size() const
+        {
+            size_type n = 0;
+            for (auto it = begin(); it != end(); ++it)
+                ++n;
+            return n;
         }
 
     private:

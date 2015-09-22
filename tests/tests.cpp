@@ -468,7 +468,8 @@ void bit_mask_test()
 {
     bit_mask<int> flags;
 
-    flags << 0x01 << 0x08 << 0x200;
+    flags << 0x02 << 0x10 << 0x08 << 0x200;
+    flags >> 0x10;
 
     for (auto f : flags)
         std::cout << "flag set: " << std::hex << f << std::endl;
