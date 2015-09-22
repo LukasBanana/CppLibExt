@@ -497,7 +497,7 @@ int main(int argc, char* argv[])
 
         //grid_vector_test();
 
-        //command_line_test(argc, argv);
+        command_line_test(argc, argv);
 
         bit_mask_test();
     }

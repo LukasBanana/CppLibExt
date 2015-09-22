@@ -20,7 +20,8 @@ namespace ext
 {
 
 
-template <typename String> class basic_command_line
+template <typename String>
+class basic_command_line
 {
 
     public:
@@ -33,13 +34,14 @@ template <typename String> class basic_command_line
             public:
 
                 argument(string_type val, std::vector<string_type> opts) :
-                    value_  { std::move(val)  },
-                    options_{ std::move(opts) }
+                    value_  ( std::move(val)  ),
+                    options_( std::move(opts) )
                 {
                 }
+
                 argument(argument&& other) :
-                    value_  { std::move(other.value_)   },
-                    options_{ std::move(other.options_) }
+                    value_  ( std::move(other.value_)   ),
+                    options_( std::move(other.options_) )
                 {
                 }
 
@@ -47,6 +49,7 @@ template <typename String> class basic_command_line
                 {
                     return value_;
                 }
+
                 const std::vector<string_type>& options() const
                 {
                     return options_;
@@ -59,12 +62,13 @@ template <typename String> class basic_command_line
 
         };
 
-        basic_command_line(std::vector<argument> args) :
-            args_{ std::move(args) }
+        basic_command_line(std::vector<argument>&& args) :
+            args_( std::move(args) )
         {
         }
+
         basic_command_line(basic_command_line&& other) :
-            args_{ std::move(other.args_) }
+            args_( std::move(other.args_) )
         {
         }
 
@@ -88,7 +92,8 @@ using command_line = basic_command_line<std::string>;
 using wcommand_line = basic_command_line<std::wstring>;
 
 
-template <typename T> class command_line_grammar
+template <typename T>
+class command_line_grammar
 {
 
     public:
@@ -167,7 +172,10 @@ class basic_command_line_parser
             string_type value = accept();
             std::vector<string_type> opts;
 
-            while (!finished() && parse_option(opts)) {}
+            while (!finished() && parse_option(opts))
+            {
+                // empty loop
+            }
 
             params.emplace_back(argument_type(std::move(value), std::move(opts)));
         }
@@ -181,6 +189,7 @@ class basic_command_line_parser
         {
             ++arg_it_;
         }
+
         string_type accept()
         {
             auto tkn = token();
