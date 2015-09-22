@@ -471,6 +471,9 @@ void bit_mask_test()
     flags << 0x02 << 0x10 << 0x08 << 0x200;
     flags >> 0x10;
 
+    std::cout << "flags capacity: " << flags.capacity() << std::endl;
+    std::cout << "flags size: " << flags.size() << std::endl;
+
     for (auto f : flags)
         std::cout << "flag set: " << std::hex << f << std::endl;
 

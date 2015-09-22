@@ -13,6 +13,7 @@
 
 
 #include <stdexcept>
+#include <type_traits>
 
 
 namespace ext
@@ -20,56 +21,68 @@ namespace ext
 
 
 //! Base class for any bit mask (or rather options).
-template <typename T> class bit_mask
+template <typename T>
+class bit_mask
 {
     
     public:
         
+        static_assert(std::is_integral<T>::value, "bit_mask requires an integral type");
+
         using value_type    = T;
         using size_type     = std::size_t;
 
     private:
         
+        struct num_bits
+        {
+            static const size_type value = sizeof(T)*8;
+        };
+
+    public:
+
         //! Bit iterator.
-        template <typename U> class base_iterator
+        class const_iterator
         {
             
             public:
                 
-                using value_type        = U;
-                using difference_type   = size_t;
+                using value_type        = const T;
+                using difference_type   = std::size_t;
                 using pointer           = value_type*;
                 using reference         = value_type&;
                 using iterator_category = std::bidirectional_iterator_tag;
 
-                base_iterator& operator ++ ()
+                const_iterator& operator ++ ()
                 {
                     /* Move forwards as long as the next bit is true */
                     do
                     {
                         ++off_;
                     }
-                    while (((bits_ >> off_) & U(0x1)) == 0 && off_ < (sizeof(U)*8));
+                    while (off_ < num_bits::value && not_set());
                     return *this;
                 }
-                base_iterator operator ++ (int) const
+
+                const_iterator operator ++ (int) const
                 {
                     auto result = *this;
                     operator ++ ();
                     return result;
                 }
 
-                base_iterator& operator -- ()
+                const_iterator& operator -- ()
                 {
                     /* Move forwards as long as the next bit is true */
                     do
                     {
                         --off_;
                     }
-                    while (((bits_ >> off_) & U(0x1)) == 0 && off_ > 0);
+                    while (off_ > 0 && not_set());
                     return *this;
                 }
-                base_iterator operator -- (int) const
+
+                const_iterator operator -- (int) const
                 {
                     auto result = *this;
                     operator -- ();
@@ -78,37 +91,40 @@ template <typename T> class bit_mask
 
                 value_type operator * () const
                 {
-                    return U(1) << off_;
+                    return T(1) << off_;
                 }
 
-                bool operator == (const base_iterator& rhs) const
+                bool operator == (const const_iterator& rhs) const
                 {
                     return &bits_ == &(rhs.bits_) && off_ == rhs.off_;
                 }
-                bool operator != (const base_iterator& rhs) const
+
+                bool operator != (const const_iterator& rhs) const
                 {
                     return !(*this == rhs);
                 }
 
-            private:
+            protected:
                 
-                base_iterator(U& bits, size_t off) :
+                const_iterator(const T& bits, std::size_t off) :
                     bits_   ( bits ),
                     off_    ( off  )
                 {
                 }
 
+                bool not_set() const
+                {
+                    return ((bits_ >> off_) & T(1)) == 0;
+                }
+
                 friend class bit_mask;
 
-                U&      bits_;  //!< Reference to the bit mask.
-                size_t  off_;   //!< Bit offset.
+            private:
+
+                const T&    bits_;  //!< Reference to the bit mask.
+                std::size_t off_;   //!< Bit offset.
 
         };
-
-    public:
-        
-        using iterator = base_iterator<T>;
-        using const_iterator = base_iterator<T const>;
 
         bit_mask() = default;
         bit_mask(const value_type& bitMask) :
@@ -117,9 +133,15 @@ template <typename T> class bit_mask
         }
 
         //! Returns the maximal bit flag.
-        static value_type max()
+        value_type max() const
         {
-            return T(1) << (sizeof(T) * 8 - 1);
+            return T(1) << (num_bits::value - 1);
+        }
+
+        //! Returns the number of bits this mask can hold.
+        size_type capacity() const
+        {
+            return num_bits::value;
         }
 
         //! Returns true if the specified bit is set in this bit mask.
@@ -172,18 +194,12 @@ template <typename T> class bit_mask
             return data();
         }
 
-        iterator begin()
-        {
-            return iterator(bits_, 0);
-        }
-        iterator end()
-        {
-            return iterator(bits_, sizeof(T)*8);
-        }
-
         const_iterator begin() const
         {
-            return const_iterator(bits_, 0);
+            const_iterator it(bits_, 0);
+            if (it.not_set())
+                ++it;
+            return it;
         }
         const_iterator end() const
         {
