@@ -5,9 +5,10 @@ This is a small library of C++11 extensions.
 
 Current features:
 - multi_array (multi dimensional array, similar to std::array)
-- range_iterator (in progress)
-- packed_vector (in progress)
-- flexible_stack (stack with flexible element sizes, similar to std::stack)
+- bit_mask (bit mask/ flags/ options wrapper class)
+- range_iterator (iterator which knowns its range)
+- packed_vector (<experimental>)
+- flexible_stack (stack with flexible element sizes, similar to std::stack; <experimental>)
 
 Examples
 ========
