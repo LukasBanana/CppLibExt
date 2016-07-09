@@ -17,6 +17,7 @@ set(LIBRARY_OUTPUT_PATH ${dir} CACHE PATH "Build directory" FORCE)
 file(GLOB_RECURSE FilesInclude ${PROJECT_SOURCE_DIR}/include/*.*)
 file(GLOB_RECURSE FilesTests ${PROJECT_SOURCE_DIR}/tests/*.*)
 
+
 # === Include directories ===
 
 include_directories("${PROJECT_SOURCE_DIR}/include")
@@ -31,4 +32,6 @@ add_executable(CppLibTests ${FilesTests})
 set_target_properties(CppLibExt PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(CppLibTests PROPERTIES LINKER_LANGUAGE CXX)
 
+target_compile_features(CppLibExt PRIVATE cxx_variadic_templates)
+target_compile_features(CppLibTests PRIVATE cxx_variadic_templates)
 

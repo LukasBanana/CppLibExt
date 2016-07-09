@@ -110,6 +110,10 @@ template <typename Base> class packed_vector
             
             public:
                 
+                using reference = typename std::iterator<std::random_access_iterator_tag, BaseType>::reference;
+                using pointer = typename std::iterator<std::random_access_iterator_tag, BaseType>::pointer;
+                using difference_type = typename std::iterator<std::random_access_iterator_tag, BaseType>::difference_type;
+            
                 base_iterator() = default;
 
                 /* --- Comparision operators --- */
@@ -155,7 +159,7 @@ template <typename Base> class packed_vector
                         chartRef_   == other.chartRef_  &&
                         dataRef_    == other.dataRef_;
                 }
-
+            
                 /* --- Access operators --- */
 
                 reference operator * () const
@@ -239,7 +243,7 @@ template <typename Base> class packed_vector
                 //! Returns true if this iterator points to a valid element of its container.
                 bool valid() const
                 {
-                    return pos_ < chartRef->size();
+                    return pos_ < chartRef_->size();
                 }
 
             protected:

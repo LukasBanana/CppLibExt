@@ -64,6 +64,8 @@ void multi_array_test()
 
     // Some array tests
     typedef multi_array<int, 3, 4, 2> my_array_t;
+    
+    std::cout << std::endl;
 
     my_array_t my_array;
     std::cout << "# of dimensions:\t" << my_array_t::num_dimensions << std::endl;
@@ -454,7 +456,7 @@ void command_line_test(int argc, char* argv[])
     auto cmdLine = parser.parse(argc, argv);
 
     std::cout << "command line:" << std::endl;
-    for (auto arg : cmdLine.arguments())
+    for (const auto& arg : cmdLine.arguments())
     {
         std::cout << "  " << arg.value() << std::endl;
         for (auto opt : arg.options())
@@ -486,7 +488,7 @@ int main(int argc, char* argv[])
 {
     try
     {
-        //multi_array_test();
+        multi_array_test();
 
         /*packed_vector_test();
         packed_vector_test2();
