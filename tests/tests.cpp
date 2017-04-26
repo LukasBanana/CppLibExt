@@ -22,6 +22,7 @@
 #include <cpplibext/grid_vector.hpp>
 #include <cpplibext/command_line.hpp>
 #include <cpplibext/bit_mask.hpp>
+#include <cpplibext/join_string.hpp>
 
 
 using namespace ext;
@@ -31,6 +32,13 @@ using namespace ext;
 #else
 #   define NOINLINE
 #endif
+
+static void test_headline(const std::string& s)
+{
+    std::cout << std::endl << std::endl << s << std::endl << std::string(s.size(), '-') << std::endl << std::endl;
+}
+
+#define TEST_HEADLINE test_headline(__FUNCTION__)
 
 /* --- multi_array tests --- */
 
@@ -47,8 +55,10 @@ NOINLINE int Get(const LukasArray& a, size_t x, size_t y, size_t z)
     return a[x][y][z];
 }
 
-void multi_array_test()
+static void multi_array_test()
 {
+    TEST_HEADLINE;
+
     // C array comparision
     ClassicArray A;
     LukasArray B;
@@ -177,8 +187,10 @@ void multi_array_test()
 
 /* --- packed_vector tests --- */
 
-void packed_vector_test()
+static void packed_vector_test()
 {
+    TEST_HEADLINE;
+
     struct A
     {
         virtual ~A()
@@ -239,8 +251,10 @@ void packed_vector_test()
     auto obj0 = it[0];
 }
 
-void packed_vector_test2()
+static void packed_vector_test2()
 {
+    TEST_HEADLINE;
+
     struct BaseX
     {
         virtual ~BaseX() {};
@@ -284,8 +298,10 @@ void packed_vector_test2()
         std::cerr << "Error: ptr3 == nulltpr\n";
 }
 
-void packed_vector_test3()
+static void packed_vector_test3()
 {
+    TEST_HEADLINE;
+
     struct A
     {
         A()
@@ -337,8 +353,10 @@ void packed_vector_test3()
     #endif
 }
 
-void packed_vector_performance_test()
+static void packed_vector_performance_test()
 {
+    TEST_HEADLINE;
+
     static const size_t num = 1000000;
     static const size_t numLists = 10;
     static const size_t showLists = 1;
@@ -410,8 +428,10 @@ void packed_vector_performance_test()
 
 /* --- flexible_stack test --- */
 
-void flexible_stack_test()
+static void flexible_stack_test()
 {
+    TEST_HEADLINE;
+
     flexible_stack<int> stack;
 
     stack.push('x', 0);
@@ -438,8 +458,10 @@ void flexible_stack_test()
 
 /* --- grid_vector test -- */
 
-void grid_vector_test()
+static void grid_vector_test()
 {
+    TEST_HEADLINE;
+
     grid_vector<int> grid;
     grid.resize(10, 10);
     
@@ -450,8 +472,10 @@ void grid_vector_test()
 
 /* --- command_line test --- */
 
-void command_line_test(int argc, char* argv[])
+static void command_line_test(int argc, char* argv[])
 {
+    TEST_HEADLINE;
+
     command_line_parser parser;
     auto cmdLine = parser.parse(argc, argv);
 
@@ -466,8 +490,10 @@ void command_line_test(int argc, char* argv[])
 
 /* --- bit_mask test --- */
 
-void bit_mask_test()
+static void bit_mask_test()
 {
+    TEST_HEADLINE;
+
     bit_mask<int> flags;
 
     flags << 0x02 << 0x10 << 0x08 << 0x200;
@@ -480,6 +506,40 @@ void bit_mask_test()
         std::cout << "flag set: " << std::hex << f << std::endl;
 
     int x=0;
+}
+
+/* --- join_string test --- */
+
+static void join_string_test()
+{
+    TEST_HEADLINE;
+
+    std::cout << join_string("undeclared identifier {0}", { "foo_bar" }) << std::endl;
+    std::cout << join_string("always {0}[, sometimes {1}]", { "first", "second" }) << std::endl;
+    std::cout << join_string("always {0}[, sometimes {1}]", { "first", "" }) << std::endl;
+    std::cout << join_string("always {0}[, sometimes {1}]", { "first" }) << std::endl;
+    std::cout << join_string("one {0}[, two {1}[, three {2}]]", { "1", "2", "3" }) << std::endl;
+    std::cout << join_string("one {0}[, two {1}[, three {2}]]", { "1", "", "3" }) << std::endl;
+    std::cout << join_string("one {0}[, two {1}][, three {2}]", { "1", "", "3" }) << std::endl;
+    std::cout << std::endl;
+
+    std::wcout << join_string(L"undeclared identifier {0}", { L"foo_bar" }) << std::endl;
+    std::wcout << join_string(L"always {0}[, sometimes {1}]", { L"first", L"second" }) << std::endl;
+    std::wcout << join_string(L"always {0}[, sometimes {1}]", { L"first", L"" }) << std::endl;
+    std::wcout << join_string(L"always {0}[, sometimes {1}]", { L"first" }) << std::endl;
+    std::wcout << join_string(L"one {0}[, two {1}[, three {2}]]", { L"1", L"2", L"3" }) << std::endl;
+    std::wcout << join_string(L"one {0}[, two {1}[, three {2}]]", { L"1", L"", L"3" }) << std::endl;
+    std::wcout << join_string(L"one {0}[, two {1}][, three {2}]", { L"1", L"", L"3" }) << std::endl;
+    std::cout << std::endl;
+
+    const std::string s0 = "foo_bar";
+    const std::string js0 = "undeclared identifier {0}";
+
+    std::cout << join_string(js0, { s0 }) << std::endl;
+    std::cout << std::endl;
+
+    std::vector<std::string> v0 { "test1", "test2" };
+    std::cout << join_string("TEST1: {0}[, TEST2: {1}]", std::begin(v0), std::end(v0)) << std::endl;
 }
 
 /* --- main --- */
@@ -502,10 +562,12 @@ int main(int argc, char* argv[])
         command_line_test(argc, argv);
 
         bit_mask_test();
+
+        join_string_test();
     }
     catch (const std::exception& err)
     {
-        std::cout << "EXCEPTION: \"" << err.what() << "\"" << std::endl;
+        std::cout << "EXCEPTION:" << std::endl << err.what() << std::endl;
     }
 
     auto ptr1 = make_shared_array<int>(10);

@@ -63,12 +63,12 @@ class basic_command_line
         };
 
         basic_command_line(std::vector<argument>&& args) :
-            args_( std::move(args) )
+            args_ { std::move(args) }
         {
         }
 
         basic_command_line(basic_command_line&& other) :
-            args_( std::move(other.args_) )
+            args_ { std::move(other.args_) }
         {
         }
 
