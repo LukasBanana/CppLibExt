@@ -8,8 +8,8 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_BIT_MASK_H_
-#define _CPPLIBEXT_BIT_MASK_H_
+#ifndef CPPLIBEXT_BIT_MASK_H
+#define CPPLIBEXT_BIT_MASK_H
 
 
 #include <stdexcept>
@@ -107,8 +107,8 @@ class bit_mask
             protected:
                 
                 const_iterator(const T& bits, std::size_t off) :
-                    bits_   ( bits ),
-                    off_    ( off  )
+                    bits_ { bits },
+                    off_  { off  }
                 {
                 }
 
@@ -128,7 +128,7 @@ class bit_mask
 
         bit_mask() = default;
         bit_mask(const value_type& bitMask) :
-            bits_( bitMask )
+            bits_ { bitMask }
         {
         }
 
@@ -194,6 +194,7 @@ class bit_mask
             return data();
         }
 
+        //! Returns a constant iterator to the first set bit.
         const_iterator begin() const
         {
             const_iterator it(bits_, 0);
@@ -201,6 +202,8 @@ class bit_mask
                 ++it;
             return it;
         }
+
+        //! Returns a constant iterator after to the end of the bit mask.
         const_iterator end() const
         {
             return const_iterator(bits_, sizeof(T)*8);

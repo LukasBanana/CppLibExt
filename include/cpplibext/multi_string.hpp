@@ -8,8 +8,8 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_MULTI_STRING_H_
-#define _CPPLIBEXT_MULTI_STRING_H_
+#ifndef CPPLIBEXT_MULTI_STRING_H
+#define CPPLIBEXT_MULTI_STRING_H
 
 #if 0//!INCOMPLETE!
 

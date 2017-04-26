@@ -8,8 +8,8 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_PACKED_VECTOR_H_
-#define _CPPLIBEXT_PACKED_VECTOR_H_
+#ifndef CPPLIBEXT_PACKED_VECTOR_H
+#define CPPLIBEXT_PACKED_VECTOR_H
 
 
 #include <vector>
@@ -56,7 +56,8 @@ auto b = list.get<B>(1);
 \endcode
 \todo Copy constructor is NOT called within a "push_back" or "insert"!
 */
-template <typename Base> class packed_vector
+template <typename Base>
+class packed_vector
 {
     
     public:

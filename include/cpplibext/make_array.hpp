@@ -8,8 +8,8 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_MAKE_ARRAY_H_
-#define _CPPLIBEXT_MAKE_ARRAY_H_
+#ifndef CPPLIBEXT_MAKE_ARRAY_H
+#define CPPLIBEXT_MAKE_ARRAY_H
 
 
 #include <memory>
@@ -24,7 +24,8 @@ Makes a new shared_ptr of type 'T[size]' and sets a custom deleter to allow arra
 \tparam T Specifies the pointer type.
 \param[in] size Specifies the array size.
 */
-template <class T> std::shared_ptr<T> make_shared_array(const size_t size)
+template <class T>
+std::shared_ptr<T> make_shared_array(const size_t size)
 {
     /* Allocate shared memory manually and set custom deleter to allow array pointers */
     return std::shared_ptr<T>(

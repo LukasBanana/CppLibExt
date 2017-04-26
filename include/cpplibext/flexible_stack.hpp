@@ -8,8 +8,8 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_FLEXIBLE_STACK_H_
-#define _CPPLIBEXT_FLEXIBLE_STACK_H_
+#ifndef CPPLIBEXT_FLEXIBLE_STACK_H
+#define CPPLIBEXT_FLEXIBLE_STACK_H
 
 
 #include <vector>
@@ -58,7 +58,8 @@ while (!myStack.empty())
 }
 \endcode
 */
-template <typename IDType> class flexible_stack
+template <typename IDType>
+class flexible_stack
 {
     
     public:
@@ -81,7 +82,8 @@ template <typename IDType> class flexible_stack
 
         /* --- Functions --- */
 
-        template <typename T> void assert_element_size()
+        template <typename T>
+        void assert_element_size()
         {
             if (sizeof(T) != valSize_)
             {
@@ -138,7 +140,8 @@ template <typename IDType> class flexible_stack
         \param[in] val Specifies the value which is to be pushed onto the stack.
         \param[in] id Specifies the data type id. This should be a unique identifier for each data type.
         */
-        template <typename T> void push(const T& val, const id_type& id)
+        template <typename T>
+        void push(const T& val, const id_type& id)
         {
             static_assert(std::is_trivially_copyable<T>::value, "flexible_stack can only store trivially copyable objects");
 
@@ -206,7 +209,8 @@ template <typename IDType> class flexible_stack
         \tparam T Specifies the data type which has been stored when "push" was called.
         \throws std::length_error When the size of 'T' is not equal to the size of the top element.
         */
-        template <typename T> T& top()
+        template <typename T>
+        T& top()
         {
             assert_element_size<T>();
             return *reinterpret_cast<T*>(&data_[valOffset_]);
@@ -217,7 +221,8 @@ template <typename IDType> class flexible_stack
         \tparam T Specifies the data type which has been stored when "push" was called.
         \throws std::length_error When the size of 'T' is not equal to the size of the top element.
         */
-        template <typename T> const T& top() const
+        template <typename T>
+        const T& top() const
         {
             assert_element_size<T>();
             return *reinterpret_cast<const T*>(&data_[valOffset_]);

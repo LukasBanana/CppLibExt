@@ -8,8 +8,8 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_RANGE_ITERATOR_H_
-#define _CPPLIBEXT_RANGE_ITERATOR_H_
+#ifndef CPPLIBEXT_RANGE_ITERATOR_H
+#define CPPLIBEXT_RANGE_ITERATOR_H
 
 
 #include <stdexcept>
@@ -54,7 +54,8 @@ void ParseArguments(const_range_iterator<std::vector<std::string>> it)
 }
 \endcode
 */
-template <typename Container, typename BaseIterator> class base_range_iterator
+template <typename Container, typename BaseIterator>
+class base_range_iterator
 {
     
     public:
@@ -71,15 +72,15 @@ template <typename Container, typename BaseIterator> class base_range_iterator
         typedef typename iterator_type::reference               reference;
 
         base_range_iterator(Container& container) :
-            begin_  { container.begin() },
-            end_    { container.end()   },
-            it_     { begin_            }
+            begin_ { container.begin() },
+            end_   { container.end()   },
+            it_    { begin_            }
         {
         }
         base_range_iterator(iterator_type begin, iterator_type end) :
-            begin_  { begin  },
-            end_    { end    },
-            it_     { begin_ }
+            begin_ { begin  },
+            end_   { end    },
+            it_    { begin_ }
         {
         }
 
@@ -196,7 +197,8 @@ This iterator keeps track of its range end and supports additional exception han
 \tparam Container Specifies the container class type. This could be std::vector, std::array, std::string, multi_array etc.
 \tparam BaseIterator Specifies the container iterator type. This should be either 'Container::iterator' or 'Container::const_iterator'.
 */
-template <typename Container, typename BaseIterator> class base_range_forward_iterator
+template <typename Container, typename BaseIterator>
+class base_range_forward_iterator
 {
     
     public:
@@ -291,8 +293,11 @@ template <typename Container, typename BaseIterator> class base_range_forward_it
 };
 
 
-template <typename Container> using range_forward_iterator = base_range_forward_iterator<Container, typename Container::iterator>;
-template <typename Container> using const_range_forward_iterator = base_range_forward_iterator<const Container, typename Container::const_iterator>;
+template <typename Container>
+using range_forward_iterator = base_range_forward_iterator<Container, typename Container::iterator>;
+
+template <typename Container>
+using const_range_forward_iterator = base_range_forward_iterator<const Container, typename Container::const_iterator>;
 
 
 } // /namespace ext

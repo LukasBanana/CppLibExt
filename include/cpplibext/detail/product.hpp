@@ -8,15 +8,15 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_PRODUCT_H_
-#define _CPPLIBEXT_PRODUCT_H_
+#ifndef CPPLIBEXT_PRODUCT_H
+#define CPPLIBEXT_PRODUCT_H
 
 
 namespace ext
 {
 
 // This namespace is only used internally
-namespace detail
+namespace details
 {
 
 
@@ -50,7 +50,7 @@ struct product_secondary<T>
 };
 
 
-} // /namespace detail
+} // /namespace details
 
 } // /namespace ext
 

@@ -8,8 +8,8 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_GRID_VECTOR_H_
-#define _CPPLIBEXT_GRID_VECTOR_H_
+#ifndef CPPLIBEXT_GRID_VECTOR_H
+#define CPPLIBEXT_GRID_VECTOR_H
 
 
 #include <vector>
@@ -19,7 +19,8 @@ namespace ext
 {
 
 
-template <typename T, class Alloc = std::allocator<T>> class grid_vector
+template <typename T, class Alloc = std::allocator<T>>
+class grid_vector
 {
     
     private:

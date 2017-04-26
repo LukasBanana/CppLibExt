@@ -8,8 +8,8 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_COMMAND_LINE_H_
-#define _CPPLIBEXT_COMMAND_LINE_H_
+#ifndef CPPLIBEXT_COMMAND_LINE_H
+#define CPPLIBEXT_COMMAND_LINE_H
 
 
 #include <string>
@@ -34,14 +34,14 @@ class basic_command_line
             public:
 
                 argument(string_type val, std::vector<string_type> opts) :
-                    value_  ( std::move(val)  ),
-                    options_( std::move(opts) )
+                    value_   { std::move(val)  },
+                    options_ { std::move(opts) }
                 {
                 }
 
                 argument(argument&& other) :
-                    value_  ( std::move(other.value_)   ),
-                    options_( std::move(other.options_) )
+                    value_   { std::move(other.value_)   },
+                    options_ { std::move(other.options_) }
                 {
                 }
 

@@ -8,8 +8,8 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_MULTI_ARRAY_H_
-#define _CPPLIBEXT_MULTI_ARRAY_H_
+#ifndef CPPLIBEXT_MULTI_ARRAY_H
+#define CPPLIBEXT_MULTI_ARRAY_H
 
 
 #include <cpplibext/detail/product.hpp>
@@ -26,7 +26,7 @@ namespace ext
 
 
 /**
-Multi dimensional array class.
+\brief Multi dimensional array class.
 \tparam T Specifies the data type for the array elements.
 \tparam Dimensions... Specifies the array dimensions. This must be at least 1 entry.
 \code
@@ -65,7 +65,7 @@ class multi_array
         template <std::size_t... DimN>
         struct array_size
         {
-            static const size_type value = detail::product<size_type, DimN...>::value;
+            static const size_type value = details::product<size_type, DimN...>::value;
         };
 
         /* --- Next array size (Dimension2 * Dimension3 * ... * DimensionN) --- */
@@ -74,7 +74,7 @@ class multi_array
         struct next_array_size
         {
             /* Ignore first dimension here, just use the variadic template arguments */
-            static const size_type value = detail::product<size_type, DimN...>::value;
+            static const size_type value = details::product<size_type, DimN...>::value;
         };
 
         /* --- First dimension --- */
@@ -142,7 +142,7 @@ class multi_array
         }
 
         multi_array(const this_array_type& other) :
-            data_( other.data_ )
+            data_ { other.data_ }
         {
         }
 
@@ -273,7 +273,7 @@ class multi_array
         size_type slices() const
         {
             static_assert(DimensionIndex < num_dimensions, "multi_array::slice out of range");
-            return detail::select<size_type, DimensionIndex, Dimensions...>::value;
+            return details::select<size_type, DimensionIndex, Dimensions...>::value;
         }
 
         template <std::size_t CurrentDimension, std::size_t... NextDimensions>

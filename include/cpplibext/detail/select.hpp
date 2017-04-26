@@ -8,8 +8,8 @@
  * of the BSD license.  See the LICENSE file for details.
  */
 
-#ifndef _CPPLIBEXT_SELECT_H_
-#define _CPPLIBEXT_SELECT_H_
+#ifndef CPPLIBEXT_SELECT_H
+#define CPPLIBEXT_SELECT_H
 
 
 #include <cstdlib>
@@ -19,7 +19,7 @@ namespace ext
 {
 
 // This namespace is only used internally
-namespace detail
+namespace details
 {
 
 
@@ -55,7 +55,7 @@ struct select_secondary
 };
 
 
-} // /namespace detail
+} // /namespace details
 
 } // /namespace ext
 
