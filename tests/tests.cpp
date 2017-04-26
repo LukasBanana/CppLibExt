@@ -532,6 +532,9 @@ static void join_string_test()
     std::wcout << join_string(L"one {0}[, two {1}][, three {2}]", { L"1", L"", L"3" }) << std::endl;
     std::cout << std::endl;
 
+    std::cout << join_string("TEST: \\\\ [\\[\\{{0}\\}\\]]", { "test" }) << std::endl;
+    std::cout << std::endl;
+
     const std::string s0 = "foo_bar";
     const std::string js0 = "undeclared identifier {0}";
 
