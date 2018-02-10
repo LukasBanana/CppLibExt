@@ -477,7 +477,7 @@ static void command_line_test(int argc, char* argv[])
     TEST_HEADLINE;
 
     command_line_parser parser;
-    auto cmdLine = parser.parse(argc, argv);
+    auto cmdLine = parser.parse(argc - 1, argv + 1);
 
     std::cout << "command line:" << std::endl;
     for (const auto& arg : cmdLine.arguments())

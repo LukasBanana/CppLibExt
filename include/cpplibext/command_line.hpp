@@ -33,17 +33,20 @@ class basic_command_line
 
             public:
 
-                argument(string_type val, std::vector<string_type> opts) :
+                argument(const string_type& val, const std::vector<string_type>& opts) :
+                    value_   { val  },
+                    options_ { opts }
+                {
+                }
+
+                argument(string_type&& val, std::vector<string_type>&& opts) :
                     value_   { std::move(val)  },
                     options_ { std::move(opts) }
                 {
                 }
 
-                argument(argument&& other) :
-                    value_   { std::move(other.value_)   },
-                    options_ { std::move(other.options_) }
-                {
-                }
+                argument(const argument&) = default;
+                argument(argument&& rhs) = default;
 
                 const string_type& value() const
                 {
@@ -57,8 +60,8 @@ class basic_command_line
 
             private:
 
-                string_type value_;
-                std::vector<string_type> options_;
+                string_type                 value_;
+                std::vector<string_type>    options_;
 
         };
 
@@ -102,11 +105,11 @@ class command_line_grammar
 
         static bool is_token_option(char_type chr)
         {
-            return chr == char_type('-');
+            return (chr == char_type('-'));
         }
         static bool is_token_pipe(char_type chr)
         {
-            return chr == char_type('|');
+            return (chr == char_type('|'));
         }
 
 };
