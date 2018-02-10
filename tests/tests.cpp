@@ -17,6 +17,7 @@
 #include <cpplibext/multi_array.hpp>
 #include <cpplibext/range_iterator.hpp>
 #include <cpplibext/make_shared_array.hpp>
+#include <cpplibext/make_unique.hpp>
 #include <cpplibext/grid_vector.hpp>
 #include <cpplibext/command_line.hpp>
 #include <cpplibext/bit_mask.hpp>
@@ -294,7 +295,7 @@ int main(int argc, char* argv[])
     }
 
     auto ptr1 = make_shared_array<int>(10);
-    //auto ptr2 = std::make_unique<int[]>(10);
+    auto ptr2 = make_unique<int>(10);
 
     std::cout << std::endl;
     system("pause");
