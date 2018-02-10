@@ -26,24 +26,24 @@ class grid_vector
     private:
 
         /* --- Extended types --- */
-        typedef std::vector<T, Alloc> storage_type;
-        typedef grid_vector<T, Alloc> this_type;
+        using storage_type  = std::vector<T, Alloc>;
+        using this_type     = grid_vector<T, Alloc>;
 
     public:
 
         /* --- std::vector types --- */
-        typedef typename storage_type::value_type               value_type;
-        typedef typename storage_type::allocator_type           allocator_type;
-        typedef typename storage_type::pointer                  pointer;
-        typedef typename storage_type::const_pointer            const_pointer;
-        typedef typename storage_type::reference                reference;
-        typedef typename storage_type::const_reference          const_reference;
-        typedef typename storage_type::iterator                 iterator;
-        typedef typename storage_type::const_iterator           const_iterator;
-        typedef typename storage_type::reverse_iterator         reverse_iterator;
-        typedef typename storage_type::const_reverse_iterator   const_reverse_iterator;
-        typedef typename storage_type::difference_type          difference_type;
-        typedef typename storage_type::size_type                size_type;
+        using value_type                = typename storage_type::value_type;
+        using allocator_type            = typename storage_type::allocator_type;
+        using pointer                   = typename storage_type::pointer;
+        using const_pointer             = typename storage_type::const_pointer;
+        using reference                 = typename storage_type::reference;
+        using const_reference           = typename storage_type::const_reference;
+        using iterator                  = typename storage_type::iterator                 ;
+        using const_iterator            = typename storage_type::const_iterator;
+        using reverse_iterator          = typename storage_type::reverse_iterator;
+        using const_reverse_iterator    = typename storage_type::const_reverse_iterator;
+        using difference_type           = typename storage_type::difference_type;
+        using size_type                 = typename storage_type::size_type;
 
     private:
 

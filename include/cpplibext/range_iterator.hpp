@@ -61,15 +61,15 @@ class base_range_iterator
     public:
 
         /* --- Extended types --- */
-        typedef BaseIterator                                    iterator_type;
-        typedef base_range_iterator<Container, BaseIterator>    this_type;
+        using iterator_type = BaseIterator;
+        using this_type     = base_range_iterator<Container, BaseIterator>;
 
         /* --- STL iterator types --- */
-        typedef typename iterator_type::iterator_category       iterator_category;
-        typedef typename iterator_type::value_type              value_type;
-        typedef typename iterator_type::difference_type         difference_type;
-        typedef typename iterator_type::pointer                 pointer;
-        typedef typename iterator_type::reference               reference;
+        using iterator_category = typename iterator_type::iterator_category;
+        using value_type        = typename iterator_type::value_type;
+        using difference_type   = typename iterator_type::difference_type;
+        using pointer           = typename iterator_type::pointer;
+        using reference         = typename iterator_type::reference;
 
         base_range_iterator(Container& container) :
             begin_ { container.begin() },
@@ -187,8 +187,11 @@ class base_range_iterator
 };
 
 
-template <typename Container> using range_iterator = base_range_iterator<Container, typename Container::iterator>;
-template <typename Container> using const_range_iterator = base_range_iterator<const Container, typename Container::const_iterator>;
+template <typename Container>
+using range_iterator = base_range_iterator<Container, typename Container::iterator>;
+
+template <typename Container>
+using const_range_iterator = base_range_iterator<const Container, typename Container::const_iterator>;
 
 
 /**
@@ -204,24 +207,24 @@ class base_range_forward_iterator
     public:
 
         /* --- Extended types --- */
-        typedef BaseIterator                                            iterator_type;
-        typedef base_range_forward_iterator<Container, BaseIterator>    this_type;
+        using iterator_type = BaseIterator;
+        using this_type     = base_range_forward_iterator<Container, BaseIterator>;
 
         /* --- STL iterator types --- */
-        typedef typename iterator_type::iterator_category       iterator_category;
-        typedef typename iterator_type::value_type              value_type;
-        typedef typename iterator_type::difference_type         difference_type;
-        typedef typename iterator_type::pointer                 pointer;
-        typedef typename iterator_type::reference               reference;
+        using iterator_category = typename iterator_type::iterator_category;
+        using value_type        = typename iterator_type::value_type;
+        using difference_type   = typename iterator_type::difference_type;
+        using pointer           = typename iterator_type::pointer;
+        using reference         = typename iterator_type::reference;
 
         base_range_forward_iterator(Container& container) :
-            end_    { container.end()   },
-            it_     { container.begin() }
+            end_ { container.end()   },
+            it_  { container.begin() }
         {
         }
         base_range_forward_iterator(iterator_type begin, iterator_type end) :
-            end_    { end   },
-            it_     { begin }
+            end_ { end   },
+            it_  { begin }
         {
         }
 
