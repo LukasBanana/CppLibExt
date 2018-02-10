@@ -20,13 +20,13 @@ namespace ext
 {
 
 
-template <typename String>
+template <typename StringT>
 class basic_command_line
 {
 
     public:
 
-        using string_type = String;
+        using string_type = StringT;
 
         class argument
         {
@@ -96,36 +96,33 @@ using wcommand_line = basic_command_line<std::wstring>;
 
 
 template <typename T>
-class command_line_grammar
+struct command_line_grammar
 {
+    using char_type = T;
 
-    public:
-        
-        using char_type = T;
-
-        static bool is_token_option(char_type chr)
-        {
-            return (chr == char_type('-'));
-        }
-        static bool is_token_pipe(char_type chr)
-        {
-            return (chr == char_type('|'));
-        }
-
+    static bool is_token_option(char_type chr)
+    {
+        return (chr == char_type('-'));
+    }
+    static bool is_token_pipe(char_type chr)
+    {
+        return (chr == char_type('|'));
+    }
 };
 
 
-template <
-    typename String,
-    typename Grammar = command_line_grammar<typename String::value_type>
+template
+<
+    class StringT,
+    class Grammar = command_line_grammar<typename StringT::value_type>
 >
 class basic_command_line_parser
 {
 
     public:
         
-        using string_type       = String;
-        using char_type         = typename String::value_type;
+        using string_type       = StringT;
+        using char_type         = typename StringT::value_type;
         using grammar_type      = Grammar;
         using command_line_type = basic_command_line<string_type>;
         using argument_type     = typename command_line_type::argument;

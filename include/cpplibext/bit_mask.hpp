@@ -21,7 +21,7 @@ namespace ext
 
 
 //! Base class for any bit mask (or rather options).
-template <typename T>
+template <class T>
 class bit_mask
 {
     
