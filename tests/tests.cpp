@@ -22,6 +22,7 @@
 #include <cpplibext/command_line.hpp>
 #include <cpplibext/bit_mask.hpp>
 #include <cpplibext/join_string.hpp>
+#include <cpplibext/path.hpp>
 
 
 using namespace ext;
@@ -273,6 +274,27 @@ static void join_string_test()
     std::cout << join_string("TEST1: {0}[, TEST2: {1}]", std::begin(v0), std::end(v0)) << std::endl;
 }
 
+/* --- path test --- */
+
+static void path_test()
+{
+    TEST_HEADLINE;
+
+    path path0 = "Foo/Bar";
+    path path1 = "../Lol";
+
+    auto path2 = path0 + path1;
+
+    std::cout << "path0 = \"" << path0 << '\"' << std::endl;
+    std::cout << "path1 = \"" << path1 << '\"' << std::endl;
+    std::cout << "path2 = path0 + path1 = \"" << path2 << '\"' << std::endl;
+
+    std::cout << "sub paths of path2:" << std::endl;
+    for (const auto& sub : path2)
+        std::cout << " -> \"" << sub << '\"' << std::endl;
+
+}
+
 /* --- main --- */
 
 int main(int argc, char* argv[])
@@ -283,11 +305,13 @@ int main(int argc, char* argv[])
 
         //grid_vector_test();
 
-        command_line_test(argc, argv);
+        //command_line_test(argc, argv);
 
-        bit_mask_test();
+        //bit_mask_test();
 
-        join_string_test();
+        //join_string_test();
+
+        path_test();
     }
     catch (const std::exception& err)
     {
