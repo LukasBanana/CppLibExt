@@ -280,7 +280,11 @@ static void path_test()
 {
     TEST_HEADLINE;
 
+    #if 0
+    path path0 = "/Foo/Bar";
+    #else
     path path0 = "Foo/Bar";
+    #endif
     path path1 = "../Lol";
 
     auto path2 = path0 + path1;
@@ -288,10 +292,24 @@ static void path_test()
     std::cout << "path0 = \"" << path0 << '\"' << std::endl;
     std::cout << "path1 = \"" << path1 << '\"' << std::endl;
     std::cout << "path2 = path0 + path1 = \"" << path2 << '\"' << std::endl;
+    std::cout << "path2.size() = " << path2.size() << std::endl;
+    std::cout << "path2.root() = " << std::boolalpha << path2.root() << std::endl;
+    std::cout << "path2.absolute() = " << std::boolalpha << path2.absolute() << std::endl;
 
     std::cout << "sub paths of path2:" << std::endl;
     for (const auto& sub : path2)
         std::cout << " -> \"" << sub << '\"' << std::endl;
+
+    std::cout << "sub paths of path2 reversed:" << std::endl;
+    
+    auto it = path2.end();
+
+    do
+    {
+        --it;
+        std::cout << " -> \"" << *it << '\"' << std::endl;
+    }
+    while (it != path2.begin());
 
 }
 

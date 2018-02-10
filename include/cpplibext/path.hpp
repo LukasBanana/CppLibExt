@@ -45,7 +45,7 @@ class basic_path
                 using this_type         = const_iterator;
                 using char_type         = typename StringT::value_type;
 
-                using iterator_category = std::forward_iterator_tag;
+                using iterator_category = std::bidirectional_iterator_tag;
                 using value_type        = string_type;
                 using difference_type   = typename string_type::difference_type;
                 //using pointer           = typename iterator_type::pointer;
@@ -90,6 +90,28 @@ class basic_path
                 {
                     this_type prev { *this };
                     this->operator ++ ();
+                    return prev;
+                }
+
+                this_type& operator -- ()
+                {
+                    if (pos_ >= 2)
+                    {
+                        auto pos = str_.find_last_of(char_type('/'), pos_ - 2);
+                        if (pos == string_type::npos)
+                            pos_ = 0;
+                        else
+                            pos_ = pos + 1;
+                    }
+                    else
+                        pos_ = 0;
+                    return *this;
+                }
+
+                this_type operator -- (int)
+                {
+                    this_type prev { *this };
+                    this->operator -- ();
                     return prev;
                 }
 
@@ -247,6 +269,18 @@ class basic_path
         const_iterator end()
         {
             return const_iterator { str_, str_.size() };
+        }
+
+        //! Removes the sub path at the specified position.
+        void erase(const const_iterator& pos)
+        {
+            //TODO...
+        }
+
+        //! Inserts the sub path after the specified position.
+        void insert(const const_iterator& pos, const basic_path<StringT>& rhs)
+        {
+            //TODO...
         }
 
     public:
