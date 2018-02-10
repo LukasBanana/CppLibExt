@@ -1,7 +1,7 @@
 /*
  * tests.cpp file
  * 
- * Copyright (C) 2014-2017 Lukas Hermanns
+ * Copyright (C) 2014-2018 Lukas Hermanns
  * All rights reserved.
  *
  * This software may be modified and distributed under the terms
@@ -16,7 +16,7 @@
 
 #include <cpplibext/multi_array.hpp>
 #include <cpplibext/range_iterator.hpp>
-#include <cpplibext/make_array.hpp>
+#include <cpplibext/make_shared_array.hpp>
 #include <cpplibext/grid_vector.hpp>
 #include <cpplibext/command_line.hpp>
 #include <cpplibext/bit_mask.hpp>

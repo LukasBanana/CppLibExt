@@ -1,7 +1,7 @@
 /*
  * range_iterator.hpp file
  * 
- * Copyright (C) 2014-2017 Lukas Hermanns
+ * Copyright (C) 2014-2018 Lukas Hermanns
  * All rights reserved.
  *
  * This software may be modified and distributed under the terms

@@ -1,7 +1,7 @@
 /*
- * make_array.hpp file
+ * make_shared_array.hpp file
  * 
- * Copyright (C) 2014-2017 Lukas Hermanns
+ * Copyright (C) 2014-2018 Lukas Hermanns
  * All rights reserved.
  *
  * This software may be modified and distributed under the terms
@@ -20,7 +20,7 @@ namespace ext
 
 
 /**
-Makes a new shared_ptr of type 'T[size]' and sets a custom deleter to allow array pointers.
+\brief Makes a new shared_ptr of type 'T[size]' and sets a custom deleter to allow array pointers.
 \tparam T Specifies the pointer type.
 \param[in] size Specifies the array size.
 */
