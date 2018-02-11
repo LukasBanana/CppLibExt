@@ -289,12 +289,19 @@ static void path_test()
 
     auto path2 = path0 + path1;
 
+    path path3 = "Hello/World/Foo/";
+    path path4 = "../../Bar";
+    path path5 = path3 + path4;
+
     std::cout << "path0 = \"" << path0 << '\"' << std::endl;
     std::cout << "path1 = \"" << path1 << '\"' << std::endl;
     std::cout << "path2 = path0 + path1 = \"" << path2 << '\"' << std::endl;
     std::cout << "path2.size() = " << path2.size() << std::endl;
     std::cout << "path2.root() = " << std::boolalpha << path2.root() << std::endl;
     std::cout << "path2.absolute() = " << std::boolalpha << path2.absolute() << std::endl;
+    std::cout << "path3 = \"" << path3 << '\"' << std::endl;
+    std::cout << "path4 = \"" << path4 << '\"' << std::endl;
+    std::cout << "path5 = path3 + path4 = \"" << path5 << '\"' << std::endl;
 
     std::cout << "sub paths of path2:" << std::endl;
     for (const auto& sub : path2)
@@ -310,6 +317,30 @@ static void path_test()
         std::cout << " -> \"" << *it << '\"' << std::endl;
     }
     while (it != path2.begin());
+
+    {
+        std::cout << "path::erase:" << std::endl;
+
+        auto p = path2;
+
+        for (int i = 0; !p.empty(); ++i)
+        {
+            std::cout << "  t" << i << ": " << p << std::endl;
+            p.erase(p.begin());
+        }
+    }
+
+    {
+        std::cout << "path::erase:" << std::endl;
+
+        auto p = path2;
+
+        std::cout << "  t0: " << p << std::endl;
+        p.erase(++p.begin());
+        std::cout << "  t1: " << p << std::endl;
+        p.erase(++p.begin());
+        std::cout << "  t2: " << p << std::endl;
+    }
 
 }
 

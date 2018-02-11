@@ -57,7 +57,7 @@ class basic_path
                 const_iterator(const this_type&) = default;
                 const_iterator(this_type&&) = default;
 
-                const_iterator(const string_type& str, size_type pos) :
+                const_iterator(const string_type* str, size_type pos) :
                     str_ { str },
                     pos_ { pos }
                 {
@@ -68,7 +68,7 @@ class basic_path
 
                 bool operator == (const this_type& rhs) const
                 {
-                    return (&str_ == &rhs.str_ && pos_ == rhs.pos_);
+                    return (str_ == rhs.str_ && pos_ == rhs.pos_);
                 }
 
                 bool operator != (const this_type& rhs) const
@@ -78,9 +78,9 @@ class basic_path
 
                 this_type& operator ++ ()
                 {
-                    auto pos = str_.find(char_type('/'), pos_);
+                    auto pos = str_->find(char_type('/'), pos_);
                     if (pos == string_type::npos)
-                        pos_ = str_.size();
+                        pos_ = str_->size();
                     else
                         pos_ = pos + 1;
                     return *this;
@@ -97,7 +97,7 @@ class basic_path
                 {
                     if (pos_ >= 2)
                     {
-                        auto pos = str_.find_last_of(char_type('/'), pos_ - 2);
+                        auto pos = str_->find_last_of(char_type('/'), pos_ - 2);
                         if (pos == string_type::npos)
                             pos_ = 0;
                         else
@@ -117,20 +117,67 @@ class basic_path
 
                 value_type operator * () const
                 {
-                    if (!str_.empty())
+                    if (!str_->empty())
                     {
-                        auto posEnd = str_.find(char_type('/'), pos_);
+                        auto posEnd = str_->find(char_type('/'), pos_);
                         if (posEnd == string_type::npos)
-                            return str_.substr(pos_);
+                            return str_->substr(pos_);
                         else
-                            return str_.substr(pos_, posEnd + 1 - pos_);
+                            return str_->substr(pos_, posEnd + 1 - pos_);
                     }
-                    return str_;
+                    return *str_;
+                }
+
+                //! Returns true if the sub path, pointed to by this iterator, refers to the "upper" directory.
+                bool upper_dir() const
+                {
+                    if (pos_ + 2 <= str_->size())
+                    {
+                        const char_type compareStr[] = { char_type('.'), char_type('.'), char_type('/') };
+                        auto posEnd = str_->find(char_type('/'), pos_);
+                        if (posEnd == string_type::npos)
+                            return equals(compareStr, 2, str_->size());
+                        else
+                            return equals(compareStr, 3, posEnd + 1);
+                    }
+                    return false;
+                }
+
+                //! Returns true if the sub path, pointed to by this iterator, refers to the "current" directory.
+                bool current_dir() const
+                {
+                    if (pos_ + 1 <= str_->size())
+                    {
+                        const char_type compareStr[] = { char_type('.'), char_type('/') };
+                        auto posEnd = str_->find(char_type('/'), pos_);
+                        if (posEnd == string_type::npos)
+                            return equals(compareStr, 1, str_->size());
+                        else
+                            return equals(compareStr, 2, posEnd + 1);
+                    }
+                    return false;
                 }
 
             private:
 
-                const string_type&  str_;
+                // Returns true if the sub path at the current iterator position equals the specified pattern of length 'len'.
+                bool equals(const char_type* str, size_type len, size_type posEnd) const
+                {
+                    if (pos_ + len == posEnd)
+                    {
+                        for (auto pos = pos_; pos != posEnd; ++pos, ++str)
+                        {
+                            if ((*str_)[pos] != *str)
+                                return false;
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+
+                friend class basic_path;
+
+                const string_type*  str_ = nullptr;
                 size_type           pos_ = 0;
 
         };
@@ -155,22 +202,11 @@ class basic_path
 
         /**
         \brief Appends the specified sub path to this path.
-        \throws std::invalid_argument If 'rhs' is an absolute path and this path is a relative path (see 'absolute()').
+        \throws std::invalid_argument If 'rhs' is an absolute path and this path is a non-empty relative path (see 'absolute()').
         */
         void push_back(const basic_path<StringT>& rhs)
         {
-            if (empty())
-            {
-                /* Call copy operator, since this path is currently empty */
-                this->operator = (rhs);
-            }
-            else
-            {
-                if (rhs.absolute())
-                    push_back_absolute(rhs);
-                else
-                    push_back_relative(rhs);
-            }
+            insert(end(), rhs);
         }
 
         /**
@@ -193,7 +229,6 @@ class basic_path
                 else
                     throw std::runtime_error("cannot move further upwards in path");
             }
-            return *this;
         }
 
         /**
@@ -262,25 +297,41 @@ class basic_path
         //! Returns a constant iterator to the beginning of this path.
         const_iterator begin() const
         {
-            return const_iterator { str_, 0u };
+            return const_iterator { &str_, 0u };
         }
 
         //! Returns a constant iterator to the end of this path.
-        const_iterator end()
+        const_iterator end() const
         {
-            return const_iterator { str_, str_.size() };
+            return const_iterator { &str_, str_.size() };
         }
 
         //! Removes the sub path at the specified position.
         void erase(const const_iterator& pos)
         {
-            //TODO...
+            auto posEnd = pos;
+            ++posEnd;
+            str_.erase(pos.pos_, posEnd.pos_ - pos.pos_);
         }
 
         //! Inserts the sub path after the specified position.
         void insert(const const_iterator& pos, const basic_path<StringT>& rhs)
         {
-            //TODO...
+            if (empty())
+            {
+                /* Call copy operator, since this path is currently empty */
+                this->operator = (rhs);
+            }
+            else
+            {
+                if (rhs.absolute())
+                    throw std::invalid_argument("cannot insert absolute path into other path");
+
+                if (pos.pos_ >= str_.size())
+                    append_relative(rhs);
+                else
+                    insert_relative(pos, rhs);
+            }
         }
 
     public:
@@ -332,27 +383,74 @@ class basic_path
                         str_.pop_back();
                 }
 
-                /* Remove unnecessary up-directories (e.g. "Foo/../") */
-                //TODO...
+                /* Remove all redundant upper and current directories (i.e. "../" and "./" where possible) */
+                erase_current_dirs();
+                reduce_upper_dirs();
             }
         }
 
-        void push_back_absolute(const basic_path<StringT>& rhs)
+        // Remove all "current"-directory references (i.e. "./").
+        void erase_current_dirs()
         {
-            if (!absolute())
-                throw std::invalid_argument("cannot append absolute path after relative path");
-
-            //TODO...
-            ensure_slash_end();
-            str_ += rhs.str_;
+            for (auto it = begin(); it != end(); ++it)
+            {
+                if (it.current_dir())
+                    erase(it);
+            }
         }
 
-        void push_back_relative(const basic_path<StringT>& rhs)
+        // Removes unnecessary upper directories (e.g. "Foo/../Bar" -> "Bar").
+        void reduce_upper_dirs()
         {
+            if (!empty())
+            {
+                auto curr = begin();
+                auto next = curr;
+                ++next;
 
-            //TODO...
+                while (next != end())
+                {
+                    if (!curr.upper_dir() && next.upper_dir())
+                    {
+                        /* Erase current and next sub path */
+                        erase(next);
+                        erase(curr);
+
+                        /* Move one iteration back */
+                        --curr;
+                        next = curr;
+                        ++next;
+                    }
+                    else
+                    {
+                        ++curr;
+                        ++next;
+                    }
+                }
+            }
+        }
+
+        void append_relative(const basic_path<StringT>& rhs)
+        {
+            /* Remove back sub paths for each appearance of "../" in the other path */
+            auto it = rhs.begin();
+            for (auto itEnd = rhs.end(); it != itEnd && it.upper_dir(); ++it)
+                pop_back();
+
+            /* Append new path */
             ensure_slash_end();
-            str_ += rhs.str_;
+            if (it.pos_ == 0)
+                str_ += rhs.str_;
+            else
+                str_ += rhs.str_.substr(it.pos_);
+
+            /* Reduce redundant upper directories of resulting path */
+            reduce_upper_dirs();
+        }
+
+        void insert_relative(const const_iterator& pos, const basic_path<StringT>& rhs)
+        {
+            //TODO...
         }
 
         bool root_posix() const

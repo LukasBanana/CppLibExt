@@ -162,8 +162,8 @@ bool join_sub_string
 
 
 /**
-Joins the specified string with its values.
-Special characters for the string 's' are: '{', '}', '[', and ']'.
+\brief Joins the specified string with its values.
+\remarks Special characters for the string 's' are: '{', '}', '[', and ']'.
 
 "{0}" will be replaced by the first value from the array 'values',
 "{1}" will be replaced by the second value and so froth.
@@ -175,18 +175,19 @@ if the escape character '\\' is written in front of it (e.g. "\\[...\\]"),
 to write the escape character itself use "\\\\".
 
 Examples:
-  join_string("undeclared identifier {0}", { "foo_bar" })            --> "undeclared identifier foo_bar"
-  join_string("always {0}[, sometimes {1}]", { "first", "second" })  --> "always first, sometimes second"
-  join_string("always {0}[, sometimes {1}]", { "first", "" })        --> "always first"
-  join_string("always {0}[, sometimes {1}]", { "first" })            --> "always first"
-  join_string("one {0}[, two {1}[, three {2}]]", { "1", "2", "3" })  --> "one 1, two 2, three 3"
-  join_string("one {0}[, two {1}[, three {2}]]", { "1", "", "3" })   --> "one 1"
-  join_string("one {0}[, two {1}][, three {2}]", { "1", "", "3" })   --> "one 1, three 3"
+\code
+join_string("undeclared identifier {0}", { "foo_bar" })            --> "undeclared identifier foo_bar"
+join_string("always {0}[, sometimes {1}]", { "first", "second" })  --> "always first, sometimes second"
+join_string("always {0}[, sometimes {1}]", { "first", "" })        --> "always first"
+join_string("always {0}[, sometimes {1}]", { "first" })            --> "always first"
+join_string("one {0}[, two {1}[, three {2}]]", { "1", "2", "3" })  --> "one 1, two 2, three 3"
+join_string("one {0}[, two {1}[, three {2}]]", { "1", "", "3" })   --> "one 1"
+join_string("one {0}[, two {1}][, three {2}]", { "1", "", "3" })   --> "one 1, three 3"
+\endcode
 
-Throw:
-  std::out_of_range If a value index, that is not optional, is out of range
-  std::invalid_argument If there is an incomplete escape character (e.g. "\\")
-  std::invalid_argument If there is an incomplete optional part, i.e. a missing closing ']' (e.g. "[")
+\throws std::out_of_range If a value index, that is not optional, is out of range.
+\throws std::invalid_argument If there is an incomplete escape character (e.g. "\\").
+\throws std::invalid_argument If there is an incomplete optional part, i.e. a missing closing ']' (e.g. "[").
 */
 template
 <
@@ -205,14 +206,14 @@ std::basic_string<CharT, Traits, Allocator> join_string(
     string_type out;
     typename string_type::size_type pos = 0;
 
-    // Verify input iterators
+    /* Verify input iterators */
     if (std::distance(valuesBegin, valuesEnd) < 0)
         throw std::invalid_argument("reversed input iterators in join_string");
     
-    // Join sub string
+    /* Join sub string */
     details::join_sub_string(s, pos, out, valuesBegin, valuesEnd, false);
 
-    // Check if position has been reached the end of the input string
+    /* Check if position has been reached the end of the input string */
     if (pos != s.size())
         throw std::invalid_argument("incomplete optional part in join_string");
 
