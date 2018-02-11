@@ -432,17 +432,9 @@ class basic_path
 
         void append_relative(const basic_path<StringT>& rhs)
         {
-            /* Remove back sub paths for each appearance of "../" in the other path */
-            auto it = rhs.begin();
-            for (auto itEnd = rhs.end(); it != itEnd && it.upper_dir(); ++it)
-                pop_back();
-
             /* Append new path */
             ensure_slash_end();
-            if (it.pos_ == 0)
-                str_ += rhs.str_;
-            else
-                str_ += rhs.str_.substr(it.pos_);
+            str_ += rhs.str_;
 
             /* Reduce redundant upper directories of resulting path */
             reduce_upper_dirs();
@@ -450,7 +442,12 @@ class basic_path
 
         void insert_relative(const const_iterator& pos, const basic_path<StringT>& rhs)
         {
-            //TODO...
+            /* Insert new path and also insert '/' slash */
+            str_.insert(pos.pos_, rhs.str_);
+            str_.insert(pos.pos_ + rhs.str_.size(), 1, value_type('/'));
+
+            /* Reduce redundant upper directories of resulting path */
+            reduce_upper_dirs();
         }
 
         bool root_posix() const

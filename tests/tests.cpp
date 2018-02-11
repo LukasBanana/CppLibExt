@@ -319,7 +319,7 @@ static void path_test()
     while (it != path2.begin());
 
     {
-        std::cout << "path::erase:" << std::endl;
+        std::cout << "path::erase" << std::endl;
 
         auto p = path2;
 
@@ -331,7 +331,7 @@ static void path_test()
     }
 
     {
-        std::cout << "path::erase:" << std::endl;
+        std::cout << "path::erase" << std::endl;
 
         auto p = path2;
 
@@ -342,6 +342,17 @@ static void path_test()
         std::cout << "  t2: " << p << std::endl;
     }
 
+    {
+        std::cout << "path::insert" << std::endl;
+
+        auto p = path2;
+
+        std::cout << "  t0: " << p << std::endl;
+        p.insert(++p.begin(), path2);
+        std::cout << "  t1: " << p << std::endl;
+        p.insert(++p.begin(), "../../");
+        std::cout << "  t2: " << p << std::endl;
+    }
 }
 
 /* --- main --- */
