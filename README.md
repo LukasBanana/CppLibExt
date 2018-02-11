@@ -4,6 +4,7 @@ Introduction
 This is a small library of C++11 extensions that are predominantly compatible with the STL.
 
 Featured extensions:
+
 | Feature | Type | Description |
 |---------|:----:|-------------|
 | `bit_mask` | class | Bit mask/ flags/ options class. |
