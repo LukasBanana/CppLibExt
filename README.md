@@ -10,7 +10,7 @@ Featured extensions:
 | `bit_mask` | class | Bit mask/ flags/ options class. |
 | `command_line` | class | Command line parser and data model for command line arguments and options. |
 | `grid_vector` | wrapper | Simple wrapper of std::vector for 2-dimensional element access. |
-| `join_string` | function | Joins a string with fixed and optional values (for advanced message generation). |
+| `join_string` | function | Joins a string with fixed and optional values (e.g. for localization). |
 | `multi_array` | class | Multi dimensional array, similar to std::array. |
 | `path` | class | Directory path reader, iterator, and beautifier. |
 | `range_iterator` | class | Iterator which keeps track of its range. |
