@@ -12,8 +12,9 @@ Featured extensions:
 | `grid_vector` | wrapper | Simple wrapper of std::vector for 2-dimensional element access. |
 | `join_string` | function | Joins a string with fixed and optional values (e.g. for localization). |
 | `multi_array` | class | Multi dimensional array, similar to std::array. |
-| `path` | class | Directory path reader, iterator, and beautifier. |
+| `path` | class | Path string manager, iterator, and beautifier. |
 | `range_iterator` | class | Iterator which keeps track of its range. |
+| `cstring_view` | class | Alternative to `std::string_view` from C++17, but with null terminated strings. |
 
 Examples
 ========

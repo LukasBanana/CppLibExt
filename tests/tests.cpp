@@ -23,6 +23,8 @@
 #include <cpplibext/bit_mask.hpp>
 #include <cpplibext/join_string.hpp>
 #include <cpplibext/path.hpp>
+#include <cpplibext/fixed_uint.hpp>
+#include <cpplibext/cstring_view.hpp>
 
 
 using namespace ext;
@@ -355,6 +357,64 @@ static void path_test()
     }
 }
 
+/* --- fixed_uint test --- */
+
+static void fixed_uint_test()
+{
+    TEST_HEADLINE;
+
+    fixed_uint256 a, b;
+
+    a = 42u;
+    b = 17u;
+
+    std::cout << "a = " << a << std::endl;
+    std::cout << "b = " << b << std::endl;
+
+
+
+
+}
+
+/* --- cstring_view --- */
+
+static void cstring_view_test()
+{
+    TEST_HEADLINE;
+
+    std::string s1 = "Foo bar";
+
+    s1.compare(1, 2, "foo", 3, 4);
+
+    cstring_view sv1 = "Hello World";
+    cstring_view sv2 = s1;
+
+    std::cout << "sv1 = " << sv1 << std::endl;
+    std::cout << "sv2 = " << sv2 << std::endl;
+
+    std::cout << "sv1 == sv1 => " << std::boolalpha << (sv1 == sv1) << std::endl;
+    std::cout << "sv1 != sv1 => " << std::boolalpha << (sv1 != sv1) << std::endl;
+    std::cout << "sv1 <  sv1 => " << std::boolalpha << (sv1 <  sv1) << std::endl;
+    std::cout << "sv1 <= sv1 => " << std::boolalpha << (sv1 <= sv1) << std::endl;
+    std::cout << "sv1 >  sv1 => " << std::boolalpha << (sv1 >  sv1) << std::endl;
+    std::cout << "sv1 >= sv1 => " << std::boolalpha << (sv1 >= sv1) << std::endl;
+
+    std::cout << "sv1 == sv2 => " << std::boolalpha << (sv1 == sv2) << std::endl;
+    std::cout << "sv1 != sv2 => " << std::boolalpha << (sv1 != sv2) << std::endl;
+    std::cout << "sv1 <  sv2 => " << std::boolalpha << (sv1 <  sv2) << std::endl;
+    std::cout << "sv1 <= sv2 => " << std::boolalpha << (sv1 <= sv2) << std::endl;
+    std::cout << "sv1 >  sv2 => " << std::boolalpha << (sv1 >  sv2) << std::endl;
+    std::cout << "sv1 >= sv2 => " << std::boolalpha << (sv1 >= sv2) << std::endl;
+
+    for (auto c : sv1)
+        std::cout << c;
+    std::cout << std::endl;
+
+    for (auto it = sv1.rbegin(); it != sv1.rend(); ++it)
+        std::cout << *it;
+    std::cout << std::endl;
+}
+
 /* --- main --- */
 
 int main(int argc, char* argv[])
@@ -371,7 +431,11 @@ int main(int argc, char* argv[])
 
         //join_string_test();
 
-        path_test();
+        //path_test();
+
+        fixed_uint_test();
+
+        cstring_view_test();
     }
     catch (const std::exception& err)
     {

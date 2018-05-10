@@ -25,16 +25,16 @@ namespace ext
 template <class T>
 class bit_mask
 {
-    
+
     public:
-        
+
         static_assert(std::is_integral<T>::value, "bit_mask requires an integral type");
 
         using value_type    = T;
         using size_type     = std::size_t;
 
     private:
-        
+
         struct num_bits
         {
             static const size_type value = sizeof(T)*8;
@@ -45,9 +45,9 @@ class bit_mask
         //! Bit iterator.
         class const_iterator
         {
-            
+
             public:
-                
+
                 using value_type        = const T;
                 using difference_type   = std::size_t;
                 using pointer           = value_type*;
@@ -106,7 +106,7 @@ class bit_mask
                 }
 
             protected:
-                
+
                 const_iterator(const T& bits, std::size_t off) :
                     bits_ { bits },
                     off_  { off  }
@@ -223,7 +223,7 @@ class bit_mask
         }
 
     private:
-        
+
         value_type bits_ = 0;
 
 };

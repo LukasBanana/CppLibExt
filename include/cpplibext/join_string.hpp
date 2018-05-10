@@ -209,7 +209,7 @@ std::basic_string<CharT, Traits, Allocator> join_string(
     /* Verify input iterators */
     if (std::distance(valuesBegin, valuesEnd) < 0)
         throw std::invalid_argument("reversed input iterators in join_string");
-    
+
     /* Join sub string */
     details::join_sub_string(s, pos, out, valuesBegin, valuesEnd, false);
 
