@@ -25,34 +25,22 @@ namespace details
 
 /*
 meta template to select entry of variadic template arguments:
-select<int, size_t(0), 2, 5, 3>::value == 2;
-select<int, size_t(1), 2, 5, 3>::value == 5;
-select<int, size_t(2), 2, 5, 3>::value == 3;
+select<int, 0, 2, 5, 3>::value == 2;
+select<int, 1, 2, 5, 3>::value == 5;
+select<int, 2, 2, 5, 3>::value == 3;
 */
 
-// Declaration for GCC and clang
-template <typename T, std::size_t index, T... XN>
-struct select_secondary;
+    template <typename T, unsigned int index, T X1, T... XN>
+    struct select
+    {
+        static constexpr T value = select<T, (index - 1), XN...>::value;
+    };
 
-template <typename T, std::size_t index, T X1, T... XN>
-struct select
-{
-    // Brackets are required!
-    static const T value = (select_secondary<T, (index - std::size_t(1)), XN...>::value);
-};
-
-template <typename T, T X1, T... XN>
-struct select<T, std::size_t(0), X1, XN...>
-{
-    static const T value = X1;
-};
-
-template <typename T, std::size_t index, T... XN>
-struct select_secondary
-{
-    // Brackets are required!
-    static const T value = (select<T, index, XN...>::value);
-};
+    template <typename T, T X1, T... XN>
+    struct select<T, 0, X1, XN...>
+    {//when index decrease to zero, then successfull selected
+        static constexpr T value = X1;
+    };
 
 
 } // /namespace details
