@@ -53,7 +53,7 @@ class fixed_uint
         template <typename T>
         void convert_from(T rhs)
         {
-            using min_type = std::conditional<sizeof(T) < sizeof(BaseType), T, BaseType>::type;
+            using min_type = typename std::conditional<sizeof(T) < sizeof(BaseType), T, BaseType>::type;
 
             const T min_mask = static_cast<T>(std::numeric_limits<min_type>::max());
 
@@ -398,7 +398,7 @@ template <std::size_t BitSize, class BaseType = std::uint8_t>
 std::ostream& operator << (std::ostream& stream, const fixed_uint<BitSize, BaseType>& num)
 {
     /* Determine base for conversion from number-to-string */
-    fixed_uint<BitSize, BaseType>::size_type base = 10;
+    typename fixed_uint<BitSize, BaseType>::size_type base = 10;
 
     if ((stream.flags() & std::ios::hex) != 0)
         base = 16;

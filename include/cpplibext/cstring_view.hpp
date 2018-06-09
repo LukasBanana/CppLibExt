@@ -14,6 +14,7 @@
 
 #include <string>
 #include <cstring>
+#include <cwchar>
 #include <iterator>
 #include <limits>
 #include <algorithm>
@@ -22,6 +23,35 @@
 
 namespace ext
 {
+
+
+namespace details
+{
+
+
+template <class CharT>
+std::size_t cstring_len(const CharT* s)
+{
+    std::size_t len = 0;
+    while (*(s++) != 0)
+        ++len;
+    return len;
+}
+
+template <>
+std::size_t cstring_len<char>(const char* s)
+{
+    return std::strlen(s);
+}
+
+template <>
+std::size_t cstring_len(const wchar_t* s)
+{
+    return std::wcslen(s);
+}
+
+
+} // /namespace details
 
 
 /**
@@ -124,25 +154,25 @@ class basic_cstring_view
         //! Returns an reverse iterator to the beginning.
         constexpr const_reverse_iterator rbegin() const
         {
-            return std::make_reverse_iterator(end());
+            return std::reverse_iterator<const_iterator>(end());
         }
 
         //! Returns an reverse iterator to the beginning.
         constexpr const_reverse_iterator crbegin() const
         {
-            return std::make_reverse_iterator(end());
+            return std::reverse_iterator<const_iterator>(end());
         }
 
         //! Returns an reverse iterator to the end.
         constexpr const_reverse_iterator rend() const
         {
-            return std::make_reverse_iterator(begin());
+            return std::reverse_iterator<const_iterator>(begin());
         }
 
         //! Returns an reverse iterator to the end.
         constexpr const_reverse_iterator crend() const
         {
-            return std::make_reverse_iterator(begin());
+            return std::reverse_iterator<const_iterator>(begin());
         }
 
         /* ----- Element Access ----- */
@@ -241,12 +271,12 @@ class basic_cstring_view
 
         int compare(const CharT* s) const noexcept
         {
-            return compare_primary(0, size(), s, 0, v.size());
+            return compare_primary(0, size(), s, 0, cstring_len(s));
         }
 
         int compare(size_type pos1, size_type len1, const CharT* s) const noexcept
         {
-            return compare_primary(pos1, len1, s, 0, v.size());
+            return compare_primary(pos1, len1, s, 0, cstring_len(s));
         }
 
         int compare(size_type pos1, size_type len1, const CharT* s, size_type pos2, size_type len2) const noexcept
