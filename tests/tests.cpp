@@ -449,7 +449,10 @@ int main(int argc, char* argv[])
     auto ptr2 = make_unique<int>(10);
 
     std::cout << std::endl;
+    
+    #ifdef _WIN32
     system("pause");
+    #endif
 
     return 0;
 }
