@@ -45,14 +45,14 @@ static void test_headline(const std::string& s)
 /* --- multi_array tests --- */
 
 typedef int ClassicArray[10][10][10];
-typedef multi_array<int, 10, 10, 10> LukasArray;
+typedef multi_array<int, 10, 10, 10> MyArrayType;
 
 NOINLINE int Get(const ClassicArray& a, size_t x, size_t y, size_t z)
 {
     return a[x][y][z];
 }
 
-NOINLINE int Get(const LukasArray& a, size_t x, size_t y, size_t z)
+NOINLINE int Get(const MyArrayType& a, size_t x, size_t y, size_t z)
 {
     return a[x][y][z];
 }
@@ -63,7 +63,7 @@ static void multi_array_test()
 
     // C array comparision
     ClassicArray A;
-    LukasArray B;
+    MyArrayType B;
 
     A[1][2][3] = 5;
     B[0][2][2] = 6;
@@ -76,7 +76,7 @@ static void multi_array_test()
 
     // Some array tests
     typedef multi_array<int, 3, 4, 2> my_array_t;
-    
+
     std::cout << std::endl;
 
     my_array_t my_array;
@@ -104,7 +104,7 @@ static void multi_array_test()
     my_array[1] = -1;
     my_array[2][1] = -3;
     my_array[2][2][0] = -5;
-        
+
     for (size_t x = 0; x < 3; ++x)
     {
         for (size_t y = 0; y < 4; ++y)
@@ -115,7 +115,7 @@ static void multi_array_test()
             }
         }
     }
-        
+
     std::cout << std::endl;
 
     multi_array<int, 3, 2> my_simple_array;
@@ -164,7 +164,7 @@ static void multi_array_test()
     /* --- range_iterator tests --- */
 
     #ifdef _MSC_VER
-        
+
     std::cout << std::endl;
     //for (const_range_iterator<decltype(my_array)> it { my_array }; !it.reached_end(); ++it)
     for (const_range_iterator<my_array_t> it { my_array }; !it.reached_end(); ++it)
@@ -195,7 +195,7 @@ static void grid_vector_test()
 
     grid_vector<int> grid;
     grid.resize(10, 10);
-    
+
     grid(0, 0) = 5;
 
     std::cout << "grid size = ( " << grid.width() << ", " << grid.height() << " )" << std::endl;
@@ -313,7 +313,7 @@ static void path_test()
         std::cout << " -> \"" << sub << '\"' << std::endl;
 
     std::cout << "sub paths of path2 reversed:" << std::endl;
-    
+
     auto it = path2.end();
 
     do
