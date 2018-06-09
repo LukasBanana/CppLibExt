@@ -429,13 +429,13 @@ int main(int argc, char* argv[])
 
         //bit_mask_test();
 
-        //join_string_test();
+        join_string_test();
 
         //path_test();
 
-        fixed_uint_test();
+        //fixed_uint_test();
 
-        cstring_view_test();
+        //cstring_view_test();
     }
     catch (const std::exception& err)
     {
@@ -447,6 +447,6 @@ int main(int argc, char* argv[])
 
     std::cout << std::endl;
     system("pause");
-    
+
     return 0;
 }

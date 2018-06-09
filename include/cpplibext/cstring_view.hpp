@@ -29,7 +29,7 @@ namespace ext
 \remarks This class is NOT compatible to the C++17 class 'std::basic_string_view',
 since this class (i.e. 'ext::basic_cstring_view') expects the wrapped string pointer to have a null terminator.
 */
-template <typename CharT, typename Traits = std::char_traits<CharT>>
+template <class CharT, class Traits = std::char_traits<CharT>>
 class basic_cstring_view
 {
 
@@ -51,7 +51,7 @@ class basic_cstring_view
     public:
 
         //! Equivalent to 'std::string::npos'.
-        //static constexpr size_type npos = size_type(-1);
+        static constexpr size_type npos = size_type(-1);
 
     public:
 
@@ -77,7 +77,7 @@ class basic_cstring_view
         }
 
         //! Constructs this string view with the specified string.
-        template <typename Alloc>
+        template <class Alloc>
         constexpr basic_cstring_view(const std::basic_string<CharT, Traits, Alloc>& str) :
             str_ { str.c_str() },
             len_ { str.size()  }
@@ -88,7 +88,7 @@ class basic_cstring_view
 
         basic_cstring_view& operator = (const basic_cstring_view&) noexcept = default;
 
-        template <typename Alloc>
+        template <class Alloc>
         basic_cstring_view& operator = (const std::basic_string<CharT, Traits, Alloc>& str)
         {
             str_ = str.c_str();
@@ -308,37 +308,37 @@ class basic_cstring_view
 
 /* ----- Comparison ----- */
 
-template <typename CharT, typename Traits>
+template <class CharT, class Traits>
 bool operator == (basic_cstring_view<CharT, Traits> lhs, basic_cstring_view<CharT, Traits> rhs) noexcept
 {
     return (lhs.compare(rhs) == 0);
 }
 
-template <typename CharT, typename Traits>
+template <class CharT, class Traits>
 bool operator != (basic_cstring_view<CharT, Traits> lhs, basic_cstring_view<CharT, Traits> rhs) noexcept
 {
     return (lhs.compare(rhs) != 0);
 }
 
-template <typename CharT, typename Traits>
+template <class CharT, class Traits>
 bool operator < (basic_cstring_view<CharT, Traits> lhs, basic_cstring_view<CharT, Traits> rhs) noexcept
 {
     return (lhs.compare(rhs) < 0);
 }
 
-template <typename CharT, typename Traits>
+template <class CharT, class Traits>
 bool operator <= (basic_cstring_view<CharT, Traits> lhs, basic_cstring_view<CharT, Traits> rhs) noexcept
 {
     return (lhs.compare(rhs) <= 0);
 }
 
-template <typename CharT, typename Traits>
+template <class CharT, class Traits>
 bool operator > (basic_cstring_view<CharT, Traits> lhs, basic_cstring_view<CharT, Traits> rhs) noexcept
 {
     return (lhs.compare(rhs) > 0);
 }
 
-template <typename CharT, typename Traits>
+template <class CharT, class Traits>
 bool operator >= (basic_cstring_view<CharT, Traits> lhs, basic_cstring_view<CharT, Traits> rhs) noexcept
 {
     return (lhs.compare(rhs) >= 0);
@@ -347,7 +347,7 @@ bool operator >= (basic_cstring_view<CharT, Traits> lhs, basic_cstring_view<Char
 
 /* ----- Stream Output ----- */
 
-template <typename CharT, typename Traits>
+template <class CharT, class Traits>
 std::basic_ostream<CharT, Traits>& operator << (std::basic_ostream<CharT, Traits>& os, basic_cstring_view<CharT, Traits> v)
 {
     os << v.c_str();

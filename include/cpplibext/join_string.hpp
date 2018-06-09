@@ -12,6 +12,7 @@
 #define CPPLIBEXT_JOIN_STRING_H
 
 
+#include "cstring_view.hpp"
 #include <string>
 #include <stdexcept>
 #include <initializer_list>
@@ -55,12 +56,12 @@ template
 >
 bool join_sub_string
     (
-        const std::basic_string<CharT, Traits, Allocator>&                  in,
-        typename std::basic_string<CharT, Traits, Allocator>::size_type&    pos,
-        std::basic_string<CharT, Traits, Allocator>&                        out,
-        InputIterator                                                       valuesBegin,
-        InputIterator                                                       valuesEnd,
-        bool                                                                optional
+        const basic_cstring_view<CharT, Traits>&                in,
+        typename basic_cstring_view<CharT, Traits>::size_type&  pos,
+        std::basic_string<CharT, Traits, Allocator>&            out,
+        InputIterator                                           valuesBegin,
+        InputIterator                                           valuesEnd,
+        bool                                                    optional
     )
 {
     using string_type   = std::basic_string<CharT, Traits, Allocator>;
@@ -197,14 +198,12 @@ template
     class InputIterator
 >
 std::basic_string<CharT, Traits, Allocator> join_string(
-    const std::basic_string<CharT, Traits, Allocator>& s,
-    InputIterator valuesBegin,
-    InputIterator valuesEnd)
+    const basic_cstring_view<CharT, Traits>&    s,
+    InputIterator                               valuesBegin,
+    InputIterator                               valuesEnd)
 {
-    using string_type = std::basic_string<CharT, Traits, Allocator>;
-
-    string_type out;
-    typename string_type::size_type pos = 0;
+    std::basic_string<CharT, Traits, Allocator> out;
+    typename basic_cstring_view<CharT, Traits>::size_type pos = 0;
 
     /* Verify input iterators */
     if (std::distance(valuesBegin, valuesEnd) < 0)
@@ -220,64 +219,65 @@ std::basic_string<CharT, Traits, Allocator> join_string(
     return out;
 }
 
+//! Generic wrapper function for ANSI-C strings that shall be joined with values specified by two iterators.
 template
 <
-    class CharT,
-    class InputIterator
->
-std::basic_string<CharT> join_string(
-    const CharT* s,
-    InputIterator valuesBegin,
-    InputIterator valuesEnd)
-{
-    return join_string(std::basic_string<CharT>(s), valuesBegin, valuesEnd);
-}
-
-template
-<
+    class InputIterator,
     class CharT,
     class Traits = std::char_traits<CharT>,
     class Allocator = std::allocator<CharT>
 >
 std::basic_string<CharT, Traits, Allocator> join_string(
-    const std::basic_string<CharT, Traits, Allocator>& s,
-    const std::initializer_list<const CharT*>& values)
+    const CharT*    s,
+    InputIterator   valuesBegin,
+    InputIterator   valuesEnd)
 {
-    return join_string(s, std::begin(values), std::end(values));
+    return join_string<CharT, Traits, Allocator>(std::basic_string<CharT>(s), valuesBegin, valuesEnd);
 }
 
-template <class CharT>
-std::basic_string<CharT> join_string(
-    const CharT* s,
-    const std::initializer_list<const CharT*>& values)
-{
-    return join_string(std::basic_string<CharT>(s), std::begin(values), std::end(values));
-}
-
+//! Wrapper function for ANSI-C strings.
 template
 <
+    class ValueT,
     class CharT,
     class Traits = std::char_traits<CharT>,
     class Allocator = std::allocator<CharT>
 >
 std::basic_string<CharT, Traits, Allocator> join_string(
-    const std::basic_string<CharT, Traits, Allocator>& s,
-    const std::initializer_list<std::basic_string<CharT, Traits, Allocator>>& values)
+    const CharT*                            s,
+    const std::initializer_list<ValueT>&    values)
 {
-    return join_string(s, std::begin(values), std::end(values));
+    return join_string<CharT, Traits, Allocator>(basic_cstring_view<CharT>(s), std::begin(values), std::end(values));
 }
 
+//! Wrapper function for std::basic_string.
 template
 <
+    class ValueT,
     class CharT,
     class Traits = std::char_traits<CharT>,
     class Allocator = std::allocator<CharT>
 >
-std::basic_string<CharT> join_string(
-    const CharT* s,
-    const std::initializer_list<std::basic_string<CharT, Traits, Allocator>>& values)
+std::basic_string<CharT, Traits, Allocator> join_string(
+    const basic_cstring_view<CharT, Traits>&    s,
+    const std::initializer_list<ValueT>&        values)
 {
-    return join_string(std::basic_string<CharT>(s), std::begin(values), std::end(values));
+    return join_string<CharT, Traits, Allocator>(s, std::begin(values), std::end(values));
+}
+
+//! Wrapper function for ext::basic_cstring_view.
+template
+<
+    class ValueT,
+    class CharT,
+    class Traits = std::char_traits<CharT>,
+    class Allocator = std::allocator<CharT>
+>
+std::basic_string<CharT, Traits, Allocator> join_string(
+    const std::basic_string<CharT, Traits, Allocator>&  s,
+    const std::initializer_list<ValueT>&                values)
+{
+    return join_string<CharT, Traits, Allocator>(basic_cstring_view<CharT>(s), std::begin(values), std::end(values));
 }
 
 

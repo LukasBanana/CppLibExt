@@ -43,10 +43,10 @@ class fixed_uint
 
     private:
 
-        static const size_type element_size     = sizeof(BaseType);
-        static const size_type element_bitsize  = element_size * 8;
-        static const size_type num_elements     = BitSize / (element_size * 8);
-        static const size_type buffer_size      = BitSize / 8;
+        static constexpr size_type element_size     = sizeof(BaseType);
+        static constexpr size_type element_bitsize  = element_size * 8;
+        static constexpr size_type num_elements     = BitSize / (element_size * 8);
+        static constexpr size_type buffer_size      = BitSize / 8;
 
     private:
 
@@ -130,7 +130,7 @@ class fixed_uint
         std::string str(size_type base = 10) const
         {
             std::string s;
-            
+
             /* Construct digits from left to right (to efficiently push back new elements) */
             for (auto it = buffer_.rbegin(); it != buffer_.rend(); ++it)
             {
@@ -146,13 +146,13 @@ class fixed_uint
         }
 
         //! Returns the internal buffer.
-        const std::array<BaseType, num_elements>& data() const
+        const std::array<BaseType, num_elements>& data() const noexcept
         {
             return buffer_;
         }
 
         //! Returns the internal buffer.
-        std::array<BaseType, num_elements>& data()
+        std::array<BaseType, num_elements>& data() noexcept
         {
             return buffer_;
         }
@@ -176,19 +176,19 @@ class fixed_uint
             //TODO...
             return *this;
         }
-        
+
         fixed_uint& operator -= (const fixed_uint& rhs)
         {
             //TODO...
             return *this;
         }
-        
+
         fixed_uint& operator *= (const fixed_uint& rhs)
         {
             //TODO...
             return *this;
         }
-        
+
         fixed_uint& operator /= (const fixed_uint& rhs)
         {
             //TODO...
@@ -236,7 +236,7 @@ class fixed_uint
             //TODO...
             return *this;
         }
-        
+
         fixed_uint operator ++ (int)
         {
             fixed_uint prev { this };
@@ -249,12 +249,18 @@ class fixed_uint
             //TODO...
             return *this;
         }
-        
+
         fixed_uint operator -- (int)
         {
             fixed_uint prev { this };
             --(*this);
             return prev;
+        }
+
+        int compare(const fixed_uint& rhs) const
+        {
+            //TODO...
+            return 0;
         }
 
     private:
@@ -263,6 +269,8 @@ class fixed_uint
 
 };
 
+
+/* ----- Arithmetic Operators ----- */
 
 template <std::size_t BitSize, class BaseType = std::uint8_t>
 fixed_uint<BitSize, BaseType> operator + (const fixed_uint<BitSize, BaseType>& lhs, const fixed_uint<BitSize, BaseType>& rhs)
@@ -344,6 +352,48 @@ fixed_uint<BitSize, BaseType> operator ^ (const fixed_uint<BitSize, BaseType>& l
     return result;
 }
 
+
+/* ----- Compare Operators ----- */
+
+template <std::size_t BitSize, class BaseType = std::uint8_t>
+bool operator == (const fixed_uint<BitSize, BaseType>& lhs, const fixed_uint<BitSize, BaseType>& rhs)
+{
+    return (lhs.compare(rhs) == 0);
+}
+
+template <std::size_t BitSize, class BaseType = std::uint8_t>
+bool operator != (const fixed_uint<BitSize, BaseType>& lhs, const fixed_uint<BitSize, BaseType>& rhs)
+{
+    return (lhs.compare(rhs) != 0);
+}
+
+template <std::size_t BitSize, class BaseType = std::uint8_t>
+bool operator < (const fixed_uint<BitSize, BaseType>& lhs, const fixed_uint<BitSize, BaseType>& rhs)
+{
+    return (lhs.compare(rhs) < 0);
+}
+
+template <std::size_t BitSize, class BaseType = std::uint8_t>
+bool operator <= (const fixed_uint<BitSize, BaseType>& lhs, const fixed_uint<BitSize, BaseType>& rhs)
+{
+    return (lhs.compare(rhs) <= 0);
+}
+
+template <std::size_t BitSize, class BaseType = std::uint8_t>
+bool operator > (const fixed_uint<BitSize, BaseType>& lhs, const fixed_uint<BitSize, BaseType>& rhs)
+{
+    return (lhs.compare(rhs) > 0);
+}
+
+template <std::size_t BitSize, class BaseType = std::uint8_t>
+bool operator >= (const fixed_uint<BitSize, BaseType>& lhs, const fixed_uint<BitSize, BaseType>& rhs)
+{
+    return (lhs.compare(rhs) >= 0);
+}
+
+
+/* ----- Stream Operators ----- */
+
 template <std::size_t BitSize, class BaseType = std::uint8_t>
 std::ostream& operator << (std::ostream& stream, const fixed_uint<BitSize, BaseType>& num)
 {
@@ -361,6 +411,8 @@ std::ostream& operator << (std::ostream& stream, const fixed_uint<BitSize, BaseT
     return stream;
 }
 
+
+/* ----- Type Aliases ----- */
 
 using fixed_uint128 = fixed_uint<128, std::uint64_t>;
 using fixed_uint256 = fixed_uint<256, std::uint64_t>;
