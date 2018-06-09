@@ -274,6 +274,9 @@ static void join_string_test()
 
     std::vector<std::string> v0 { "test1", "test2" };
     std::cout << join_string("TEST1: {0}[, TEST2: {1}]", std::begin(v0), std::end(v0)) << std::endl;
+
+    std::vector<ext::cstring_view> v1 { "test1", "test2" };
+    std::cout << join_string("TEST1: {0}[, TEST2: {1}]", std::begin(v1), std::end(v1)) << std::endl;
 }
 
 /* --- path test --- */
