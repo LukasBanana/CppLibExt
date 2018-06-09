@@ -12,6 +12,8 @@
 #define CPPLIBEXT_CSTRING_VIEW_H
 
 
+#include "cstring_len.hpp"
+
 #include <string>
 #include <cstring>
 #include <cwchar>
@@ -23,35 +25,6 @@
 
 namespace ext
 {
-
-
-namespace details
-{
-
-
-template <class CharT>
-std::size_t cstring_len(const CharT* s)
-{
-    std::size_t len = 0;
-    while (*(s++) != 0)
-        ++len;
-    return len;
-}
-
-template <>
-std::size_t cstring_len<char>(const char* s)
-{
-    return std::strlen(s);
-}
-
-template <>
-std::size_t cstring_len(const wchar_t* s)
-{
-    return std::wcslen(s);
-}
-
-
-} // /namespace details
 
 
 /**
@@ -92,11 +65,9 @@ class basic_cstring_view
 
         //! Constructs this string view with the specified null terminated string.
         basic_cstring_view(const CharT* s) :
-            str_ { s },
-            len_ { 0 }
+            str_ { s              },
+            len_ { cstring_len(s) }
         {
-            while (*(s++) != value_type(0))
-                ++len_;
         }
 
         //! Constructs this string view with the specified null terminated string and its length (the length must be equal to '::strlen(str)').

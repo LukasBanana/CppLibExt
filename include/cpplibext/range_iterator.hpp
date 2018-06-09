@@ -57,7 +57,7 @@ void ParseArguments(const_range_iterator<std::vector<std::string>> it)
 template <typename Container, typename BaseIterator>
 class base_range_iterator
 {
-    
+
     public:
 
         /* --- Extended types --- */
@@ -181,7 +181,7 @@ class base_range_iterator
         }
 
     private:
-        
+
         iterator_type begin_, end_, it_;
 
 };
@@ -203,7 +203,7 @@ This iterator keeps track of its range end and supports additional exception han
 template <typename Container, typename BaseIterator>
 class base_range_forward_iterator
 {
-    
+
     public:
 
         /* --- Extended types --- */
@@ -290,7 +290,7 @@ class base_range_forward_iterator
         }
 
     private:
-        
+
         iterator_type end_, it_;
 
 };

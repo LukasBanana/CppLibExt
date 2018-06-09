@@ -14,8 +14,15 @@ set(LIBRARY_OUTPUT_PATH ${dir} CACHE PATH "Build directory" FORCE)
 
 # === Global files ===
 
-file(GLOB_RECURSE FilesInclude ${PROJECT_SOURCE_DIR}/include/*.*)
-file(GLOB_RECURSE FilesTests ${PROJECT_SOURCE_DIR}/tests/*.*)
+file(GLOB FilesInclude "${PROJECT_SOURCE_DIR}/include/cpplibext/*.*")
+file(GLOB FilesIncludeDetails "${PROJECT_SOURCE_DIR}/include/cpplibext/details/*.*")
+file(GLOB FilesTests "${PROJECT_SOURCE_DIR}/tests/*.*")
+
+set(
+    LibFiles
+    ${FilesInclude}
+    ${FilesIncludeDetails}
+)
 
 
 # === Include directories ===
@@ -23,9 +30,16 @@ file(GLOB_RECURSE FilesTests ${PROJECT_SOURCE_DIR}/tests/*.*)
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 
+# === Source Groups ===
+
+source_group("cpplibext" FILES ${FilesInclude})
+source_group("cpplibext\\details" FILES ${FilesIncludeDetails})
+source_group("tests" FILES ${FilesTests})
+
+
 # === Executable ===
 
-add_library(CppLibExt STATIC ${FilesInclude})
+add_library(CppLibExt STATIC ${LibFiles})
 
 add_executable(CppLibTests ${FilesTests})
 

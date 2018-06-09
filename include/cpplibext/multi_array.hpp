@@ -12,8 +12,8 @@
 #define CPPLIBEXT_MULTI_ARRAY_H
 
 
-#include <cpplibext/detail/product.hpp>
-#include <cpplibext/detail/select.hpp>
+#include "details/product.hpp"
+#include "details/select.hpp"
 
 #include <initializer_list>
 #include <limits>
@@ -40,7 +40,7 @@ ary[2][0][3] = 4; // Write a single 4 into ary[2][0][3].
 template <typename T, std::size_t... Dimensions>
 class multi_array
 {
-    
+
     public:
 
         static_assert(sizeof...(Dimensions) > 0, "multi_array must have at least 1 dimension");
@@ -54,7 +54,7 @@ class multi_array
         using const_pointer     = const value_type*;
 
     private:
-        
+
         /*
         Helper structures with template meta programming
         to determine array size and size of slices
@@ -105,7 +105,7 @@ class multi_array
         };
 
     public:
-        
+
         //! Number of dimensions.
         static const size_type num_dimensions = sizeof...(Dimensions);
 
@@ -279,9 +279,9 @@ class multi_array
         template <std::size_t CurrentDimension, std::size_t... NextDimensions>
         class slice
         {
-            
+
             public:
-                
+
                 slice<NextDimensions...> operator [] (const size_type& index)
                 {
                     return slice<NextDimensions...>(ptr_ + (multi_array<T, NextDimensions...>::stride * index));
@@ -301,7 +301,7 @@ class multi_array
                 }
 
             private:
-                
+
                 friend class multi_array;
 
                 slice(pointer ptr) :
@@ -310,15 +310,15 @@ class multi_array
                 }
 
                 pointer ptr_ = nullptr;
-                
+
         };
 
         template <std::size_t Dimension1, std::size_t Dimension2>
         class slice<Dimension1, Dimension2>
         {
-            
+
             public:
-                
+
                 reference operator [] (const size_type& index)
                 {
                     return ptr_[index];
@@ -338,7 +338,7 @@ class multi_array
                 }
 
             private:
-                
+
                 friend class multi_array;
 
                 slice(pointer ptr) :
@@ -347,15 +347,15 @@ class multi_array
                 }
 
                 pointer ptr_ = nullptr;
-                
+
         };
 
         template <std::size_t CurrentDimension, std::size_t... NextDimensions>
         class const_slice
         {
-            
+
             public:
-                
+
                 const_slice<NextDimensions...> operator [] (const size_type& index) const
                 {
                     return const_slice<NextDimensions...>(ptr_ + (multi_array<T, NextDimensions...>::stride * index));
@@ -369,7 +369,7 @@ class multi_array
                 }
 
             private:
-                
+
                 friend class multi_array;
 
                 const_slice(const_pointer ptr) :
@@ -378,15 +378,15 @@ class multi_array
                 }
 
                 const_pointer ptr_ = nullptr;
-                
+
         };
 
         template <std::size_t Dimension1, std::size_t Dimension2>
         class const_slice<Dimension1, Dimension2>
         {
-            
+
             public:
-                
+
                 const_reference operator [] (const size_type& index) const
                 {
                     return ptr_[index];
@@ -400,7 +400,7 @@ class multi_array
                 }
 
             private:
-                
+
                 friend class multi_array;
 
                 const_slice(const_pointer ptr) :
@@ -409,7 +409,7 @@ class multi_array
                 }
 
                 const_pointer ptr_ = nullptr;
-                
+
         };
 
         slice<Dimensions...> operator [] (const size_type& index)
@@ -447,7 +447,7 @@ Multi dimensional array class.
 template <typename T, std::size_t Dimension>
 class multi_array<T, Dimension>
 {
-    
+
     public:
 
         using value_type        = T;
@@ -459,7 +459,7 @@ class multi_array<T, Dimension>
         using const_pointer     = const value_type*;
 
     public:
-        
+
         //! Number of dimensions.
         static const size_type num_dimensions = 1;
 
