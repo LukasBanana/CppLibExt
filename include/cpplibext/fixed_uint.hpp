@@ -53,6 +53,7 @@ class fixed_uint
         template <typename T>
         void convert_from(T rhs)
         {
+            #if 0
             using min_type = typename std::conditional<sizeof(T) < sizeof(BaseType), T, BaseType>::type;
 
             const T min_mask = static_cast<T>(std::numeric_limits<min_type>::max());
@@ -67,9 +68,10 @@ class fixed_uint
                 else
                 {
                     *it = (rhs & min_mask);
-                    rhs >>= element_bitsize;
+                    rhs >>= element_bitsize; //WARNING: "shift count >= width of type"
                 }
             }
+            #endif
         }
 
         void reset()
@@ -134,7 +136,7 @@ class fixed_uint
             /* Construct digits from left to right (to efficiently push back new elements) */
             for (auto it = buffer_.rbegin(); it != buffer_.rend(); ++it)
             {
-                auto v = *it;
+                //auto v = *it;
 
                 //TODO...
             }

@@ -158,7 +158,7 @@ class basic_cstring_view
         \brief Accesses the element at the specified position with bounds check.
         \throws std::out_of_range If 'pos >= size()' holds true.
         */
-        constexpr const_reference at(size_type pos) const
+        const_reference at(size_type pos) const
         {
             if (pos >= size())
                 throw std::out_of_range("'pos' is out of range in string view");

@@ -259,7 +259,7 @@ class multi_array
         {
             if (dimension >= num_dimensions)
                 throw std::out_of_range("multi_array::slices out of range");
-            std::array<size_type, num_dimensions> dim_list { Dimensions... };
+            std::array<size_type, num_dimensions> dim_list {{ Dimensions... }};
             return dim_list[dimension];
         }
 
