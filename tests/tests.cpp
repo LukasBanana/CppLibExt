@@ -64,7 +64,12 @@ static void multi_array_test()
     // C array comparision
     ClassicArray A;
     MyArrayType B;
-
+    
+    #if 1 //NOTE: disable to check how uninitialized ClassicArray and MyArrayType compare
+    memset(A, 0, sizeof(A));
+    memset(&B, 0, sizeof(B));
+    #endif
+    
     A[1][2][3] = 5;
     B[0][2][2] = 6;
 
@@ -424,21 +429,21 @@ int main(int argc, char* argv[])
 {
     try
     {
-        //multi_array_test();
+        multi_array_test();
 
-        //grid_vector_test();
+        grid_vector_test();
 
-        //command_line_test(argc, argv);
+        command_line_test(argc, argv);
 
-        //bit_mask_test();
+        bit_mask_test();
 
         join_string_test();
 
-        //path_test();
+        path_test();
 
-        //fixed_uint_test();
+        fixed_uint_test();
 
-        //cstring_view_test();
+        cstring_view_test();
     }
     catch (const std::exception& err)
     {
