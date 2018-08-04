@@ -94,6 +94,7 @@ class basic_cstring_view
         {
             str_ = str.c_str();
             len_ = str.size();
+            return *this;
         }
 
         /* ----- Iterators ----- */
@@ -125,25 +126,25 @@ class basic_cstring_view
         //! Returns an reverse iterator to the beginning.
         constexpr const_reverse_iterator rbegin() const
         {
-            return std::reverse_iterator<const_iterator>(end());
+            return const_reverse_iterator { end() };
         }
 
         //! Returns an reverse iterator to the beginning.
         constexpr const_reverse_iterator crbegin() const
         {
-            return std::reverse_iterator<const_iterator>(end());
+            return const_reverse_iterator { end() };
         }
 
         //! Returns an reverse iterator to the end.
         constexpr const_reverse_iterator rend() const
         {
-            return std::reverse_iterator<const_iterator>(begin());
+            return const_reverse_iterator { begin() };
         }
 
         //! Returns an reverse iterator to the end.
         constexpr const_reverse_iterator crend() const
         {
-            return std::reverse_iterator<const_iterator>(begin());
+            return const_reverse_iterator { begin() };
         }
 
         /* ----- Element Access ----- */
@@ -227,17 +228,17 @@ class basic_cstring_view
 
         int compare(const basic_cstring_view& v) const noexcept
         {
-            return compare_primary(0, size(), v.str_, 0, v.size());
+            return compare_primary(0, size(), v.c_str(), 0, v.size());
         }
 
         int compare(size_type pos1, size_type len1, const basic_cstring_view& v) const noexcept
         {
-            return compare_primary(pos1, len1, v.str_, 0, v.size());
+            return compare_primary(pos1, len1, v.c_str(), 0, v.size());
         }
 
         int compare(size_type pos1, size_type len1, const basic_cstring_view& v, size_type pos2, size_type len2) const noexcept
         {
-            return compare_primary(pos1, len1, v.str_, pos2, len2);
+            return compare_primary(pos1, len1, v.c_str(), pos2, len2);
         }
 
         int compare(const CharT* s) const noexcept
@@ -351,7 +352,8 @@ bool operator >= (basic_cstring_view<CharT, Traits> lhs, basic_cstring_view<Char
 template <class CharT, class Traits>
 std::basic_ostream<CharT, Traits>& operator << (std::basic_ostream<CharT, Traits>& os, basic_cstring_view<CharT, Traits> v)
 {
-    os << v.c_str();
+    if (auto s = v.c_str())
+        os << s;
     return os;
 }
 

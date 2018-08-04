@@ -29,6 +29,7 @@ namespace ext
 \brief Arithmetic class for fixed-size unsigned integers of big numbers.
 \remarks Least significant elements (based on 'BaseType' template argument) are stored at the end of the internal buffer (Little Endian).
 This does not define the endianess of the base types, only of the element arrangement inside the internal buffer.
+\todo Incomplete.
 */
 template <std::size_t BitSize, class BaseType = std::uint8_t>
 class fixed_uint

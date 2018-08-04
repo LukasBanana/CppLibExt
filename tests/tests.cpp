@@ -25,6 +25,7 @@
 #include <cpplibext/path.hpp>
 #include <cpplibext/fixed_uint.hpp>
 #include <cpplibext/cstring_view.hpp>
+#include <cpplibext/generic_string.hpp>
 
 
 using namespace ext;
@@ -423,6 +424,39 @@ static void cstring_view_test()
     std::cout << std::endl;
 }
 
+/* --- generic_string --- */
+
+static void generic_string_test()
+{
+    TEST_HEADLINE;
+
+    auto print_gstring = [](const gstring& s)
+    {
+        std::cout << "gstring(mutable: " << s.is_mutable() << ") = " << s << std::endl;
+    };
+
+    auto modify_and_print_gstring = [](gstring& s)
+    {
+        s.append(", Appendix");
+        std::cout << "gstring(mutable: " << s.is_mutable() << ") = " << s << std::endl;
+    };
+
+    gstring s1 = "Hello World";
+    gstring s2 = std::string("Foo");
+    gstring s3 = s1;
+    gstring s4 = "This is an ";
+    s4.append("Appendix");
+    gstring s5;
+
+    std::cout << std::boolalpha;
+    print_gstring(s1);
+    modify_and_print_gstring(s1);
+    std::cout << "s2(mutable: " << s2.is_mutable() << ") = " << s2 << std::endl;
+    std::cout << "s3(mutable: " << s3.is_mutable() << ") = " << s3 << std::endl;
+    std::cout << "s4(mutable: " << s4.is_mutable() << ") = " << s4 << std::endl;
+    std::cout << "s5(mutable: " << s5.is_mutable() << ") = " << s5 << std::endl;
+}
+
 /* --- main --- */
 
 int main(int argc, char* argv[])
@@ -437,13 +471,15 @@ int main(int argc, char* argv[])
 
         bit_mask_test();
 
-        join_string_test();
+        //join_string_test();
 
         path_test();
 
         fixed_uint_test();
 
         cstring_view_test();
+
+        generic_string_test();
     }
     catch (const std::exception& err)
     {
@@ -454,7 +490,7 @@ int main(int argc, char* argv[])
     auto ptr2 = make_unique<int>(10);
 
     std::cout << std::endl;
-    
+
     #ifdef _WIN32
     system("pause");
     #endif
