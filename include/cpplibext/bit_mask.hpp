@@ -127,7 +127,16 @@ class bit_mask
 
         };
 
+        //! Default constructor that initializes all bits with 0.
         bit_mask() = default;
+
+        //! Default copy constructor.
+        bit_mask(const bit_mask&) = default;
+
+        //! Default copy operator.
+        bit_mask& operator = (const bit_mask&) = default;
+
+        //! Constructor that initializes the internal bitmask with the specified value.
         bit_mask(const value_type& bitMask) :
             bits_ { bitMask }
         {
@@ -163,13 +172,13 @@ class bit_mask
             bits_ &= (~flag);
         }
 
-        // \see find
+        //! \see find
         bool operator () (const value_type& flag) const
         {
             return find(flag);
         }
 
-        // \see insert
+        //! \see insert
         bit_mask& operator << (const value_type& flag)
         {
             insert(flag);
