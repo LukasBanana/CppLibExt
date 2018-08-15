@@ -26,6 +26,7 @@
 #include <cpplibext/fixed_uint.hpp>
 #include <cpplibext/cstring_view.hpp>
 #include <cpplibext/generic_string.hpp>
+#include <cpplibext/growing_stack.hpp>
 
 
 using namespace ext;
@@ -457,6 +458,27 @@ static void generic_string_test()
     std::cout << "s5(mutable: " << s5.is_mutable() << ") = " << s5 << std::endl;
 }
 
+/* --- growing_stack --- */
+
+static void growing_stack_test()
+{
+    TEST_HEADLINE;
+
+    growing_stack<int> myStack;
+
+    myStack.push(1);
+    myStack.push(2);
+    myStack.push(3);
+    myStack.pop();
+    myStack.push(4);
+
+    while (!myStack.empty())
+    {
+        std::cout << "top value: " << myStack.top() << std::endl;
+        myStack.pop();
+    }
+}
+
 /* --- main --- */
 
 int main(int argc, char* argv[])
@@ -477,9 +499,11 @@ int main(int argc, char* argv[])
 
         //fixed_uint_test();
 
-        cstring_view_test();
+        //cstring_view_test();
 
-        generic_string_test();
+        //generic_string_test();
+
+        growing_stack_test();
     }
     catch (const std::exception& err)
     {
