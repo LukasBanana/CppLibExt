@@ -20,6 +20,7 @@ namespace ext
 {
 
 
+// Growing stack has a similar interface to std::stack<T>, but it never reduces its internal memory as long as the stack lives.
 template <class T, class Container = std::vector<T>>
 class growing_stack
 {
@@ -72,6 +73,21 @@ class growing_stack
         size_type size() const
         {
             return size_;
+        }
+
+        size_type capacity() const
+        {
+            return data_.capacity();
+        }
+
+        void reserve(size_type size)
+        {
+            data_.reserve(size);
+        }
+
+        void clear()
+        {
+            size_ = 0;
         }
 
         void push(const value_type& value)

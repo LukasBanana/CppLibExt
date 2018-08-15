@@ -466,6 +466,8 @@ static void growing_stack_test()
 
     growing_stack<int> myStack;
 
+    myStack.reserve(5);
+
     myStack.push(1);
     myStack.push(2);
     myStack.push(3);
@@ -474,7 +476,7 @@ static void growing_stack_test()
 
     while (!myStack.empty())
     {
-        std::cout << "top value: " << myStack.top() << std::endl;
+        std::cout << "top value: " << myStack.top() << ", capacity: " << myStack.capacity() << std::endl;
         myStack.pop();
     }
 }
