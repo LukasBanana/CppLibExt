@@ -38,6 +38,18 @@ class growing_stack
         growing_stack() = default;
         growing_stack(const growing_stack&) = default;
 
+        growing_stack(const container_type& rhs) :
+            data_ { rhs        },
+            size_ { rhs.size() }
+        {
+        }
+
+        growing_stack(container_type&& rhs) :
+            data_ { std::move(rhs) },
+            size_ { data_.size()   }
+        {
+        }
+
         growing_stack(growing_stack&& rhs) :
             data_ { std::move(rhs) },
             size_ { rhs.size_ }
