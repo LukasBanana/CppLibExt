@@ -9,12 +9,13 @@ Featured extensions:
 |---------|:----:|-------------|
 | `bit_mask` | class | Bit mask/ flags/ options class. |
 | `command_line` | class | Command line parser and data model for command line arguments and options. |
+| `cstring_view` | class | Alternative to `std::string_view` from C++17, but with null terminated strings. |
 | `grid_vector` | wrapper | Simple wrapper of std::vector for 2-dimensional element access. |
 | `join_string` | function | Joins a string with fixed and optional values (e.g. for localization). |
+| `member_function` | class | Alternative to `std::function` to get access to the function pointer address. |
 | `multi_array` | class | Multi dimensional array, similar to std::array. |
 | `path` | class | Path string manager, iterator, and beautifier. |
 | `range_iterator` | class | Iterator which keeps track of its range. |
-| `cstring_view` | class | Alternative to `std::string_view` from C++17, but with null terminated strings. |
 
 Examples
 ========
@@ -56,4 +57,31 @@ std::cout << ext::join_string("one {0}[, two {1}[, three {2}]]", { "1", "", "3" 
 
 // output is "one 1, three 3"
 std::cout << ext::join_string("one {0}[, two {1}][, three {2}]", { "1", "", "3" }) << std::endl;
+```
+
+### Example for `ext::member_function`
+```cpp
+class Widget {
+    int x_;
+private:
+    void set(int x) { x_ = x; }
+    int get() const { return x_; }
+    void print() { std::cout << x_ << std::endl; }
+};
+
+/* ... */
+
+ext::member_function<Widget, void(int)>   setter  = &Widget::set;
+ext::member_function<Widget, int() const> getter  = &Widget::get;
+ext::member_function<Widget, void()>      printer = &Widget::print;
+
+// Call member functions
+Widget w;
+setter(w, 42); // alternative to "w.set(42)"
+printer(w, getter(w)); // alternative to "w.print(w.get())"
+
+// Print raw function pointer addresses
+std::cout << "Widget::set   = " << setter.ptr() << std::endl;
+std::cout << "Widget::get   = " << getter.ptr() << std::endl;
+std::cout << "Widget::print = " << petter.ptr() << std::endl;
 ```
