@@ -27,6 +27,7 @@
 #include <cpplibext/cstring_view.hpp>
 #include <cpplibext/generic_string.hpp>
 #include <cpplibext/growing_stack.hpp>
+#include <cpplibext/member_function.hpp>
 
 
 using namespace ext;
@@ -481,6 +482,38 @@ static void growing_stack_test()
     }
 }
 
+/* --- member_function --- */
+
+class Widget
+{
+    int x_;
+public:
+    void set(int x) { x_ = x; }
+    int get() const { return x_; }
+    void print(int x)
+    {
+        std::cout << "Widget:" << std::endl;
+        std::cout << "  print(" << x << ")" << std::endl;
+        std::cout << "  x_ = " << x_ << std::endl;
+    }
+};
+
+static void member_function_test()
+{
+    Widget w0;
+    
+    member_function<Widget, void(int)> setter = &Widget::set;
+    member_function<Widget, int() const> getter = &Widget::get;
+    member_function<Widget, void(int)> printer = &Widget::print;
+    
+    setter(w0, 42);
+    printer(w0, getter(w0));
+    
+    std::cout << "getter function pointer: " << getter.ptr() << std::endl;
+    std::cout << "setter function pointer: " << setter.ptr() << std::endl;
+    std::cout << "printer function pointer: " << printer.ptr() << std::endl;
+}
+
 /* --- main --- */
 
 int main(int argc, char* argv[])
@@ -505,7 +538,9 @@ int main(int argc, char* argv[])
 
         //generic_string_test();
 
-        growing_stack_test();
+        //growing_stack_test();
+        
+        member_function_test();
     }
     catch (const std::exception& err)
     {
