@@ -12,6 +12,7 @@ Featured extensions:
 | `cstring_view` | class | Alternative to `std::string_view` from C++17, but with null terminated strings. |
 | `grid_vector` | wrapper | Simple wrapper of std::vector for 2-dimensional element access. |
 | `join_string` | function | Joins a string with fixed and optional values (e.g. for localization). |
+| `local_vector` | class | Container that only occupies the stack but with compatible interface to `std::vector`. |
 | `member_function` | class | Alternative to `std::function` to get access to the function pointer address. |
 | `multi_array` | class | Multi dimensional array, similar to std::array. |
 | `path` | class | Path string manager, iterator, and beautifier. |
