@@ -132,7 +132,7 @@ class basic_cstring_view
         //! Returns an reverse iterator to the beginning.
         constexpr const_reverse_iterator crbegin() const
         {
-            return const_reverse_iterator { end() };
+            return const_reverse_iterator { cend() };
         }
 
         //! Returns an reverse iterator to the end.
@@ -144,7 +144,7 @@ class basic_cstring_view
         //! Returns an reverse iterator to the end.
         constexpr const_reverse_iterator crend() const
         {
-            return const_reverse_iterator { begin() };
+            return const_reverse_iterator { cbegin() };
         }
 
         /* ----- Element Access ----- */

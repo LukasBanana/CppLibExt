@@ -28,6 +28,7 @@
 #include <cpplibext/generic_string.hpp>
 #include <cpplibext/growing_stack.hpp>
 #include <cpplibext/member_function.hpp>
+#include <cpplibext/local_vector.hpp>
 
 
 using namespace ext;
@@ -514,6 +515,32 @@ static void member_function_test()
     std::cout << "printer function pointer: " << printer.ptr() << std::endl;
 }
 
+/* --- local_vector --- */
+
+static void local_vector_test()
+{
+    local_vector<int, 32> a;
+    
+    a = { 1, 2, 3 };
+    a.push_back(42);
+    a.insert(a.begin() + 1, 999);
+    
+    auto PrintList = [](const local_vector<int, 32>& l, const char* name)
+    {
+        std::cout << name << " = { ";
+        for (auto x : l)
+            std::cout << x << ", ";
+        std::cout << "}" << std::endl;
+    };
+    
+    // Print original list
+    PrintList(a, "a");
+    
+    // Print sorted list
+    std::sort(a.begin(), a.end());
+    PrintList(a, "a");
+}
+
 /* --- main --- */
 
 int main(int argc, char* argv[])
@@ -540,7 +567,9 @@ int main(int argc, char* argv[])
 
         //growing_stack_test();
         
-        member_function_test();
+        //member_function_test();
+        
+        local_vector_test();
     }
     catch (const std::exception& err)
     {
